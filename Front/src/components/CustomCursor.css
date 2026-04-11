@@ -1,0 +1,41 @@
+.custom-cursor-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursor-dot {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-gold);
+  border-radius: 50%;
+  z-index: 10000;
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(201, 168, 76, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transition: border-color var(--transition-fast), width var(--transition-fast), height var(--transition-fast);
+}
+
+.cursor-ring--hover {
+  background-color: rgba(201, 168, 76, 0.1);
+  border-width: 2px;
+}
+
+/* Hide real cursor on interactive elements if desired, but here we just enhance it */
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor-container {
+    display: none;
+  }
+}
