@@ -2,14 +2,14 @@
 .contact-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 80px;
+  gap: 50px;
   align-items: start;
 }
 
 /* Form */
 .contact-form-wrap {
   background: var(--color-white);
-  padding: 60px;
+  padding: 40px;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-xl);
@@ -99,7 +99,7 @@
 
 .contact-info__cta {
   background: var(--color-primary);
-  padding: 40px;
+  padding: 28px 32px;
   border-radius: var(--radius-lg);
   color: var(--color-white);
   position: relative;
@@ -109,8 +109,8 @@
 .contact-info__cta::before {
   content: '';
   position: absolute;
-  top: -50px; right: -50px;
-  width: 150px; height: 150px;
+  top: -40px; right: -40px;
+  width: 120px; height: 120px;
   background: var(--color-gold);
   border-radius: 50%;
   opacity: 0.05;
@@ -118,8 +118,8 @@
 
 .contact-info__cta h4 {
   color: var(--color-white);
-  font-size: 1.4rem;
-  margin-bottom: 12px;
+  font-size: 1.25rem;
+  margin-bottom: 8px;
 }
 
 .contact-info__cta p {
@@ -130,12 +130,12 @@
 
 /* Map */
 .contact-map {
-  padding: 80px 0 0;
+  padding: 50px 0 0;
 }
 
 .contact-map__frame {
   width: 100%;
-  height: 450px;
+  height: 350px;
   overflow: hidden;
 }
 

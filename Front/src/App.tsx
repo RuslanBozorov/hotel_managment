@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 import Header from './components/Header';
 import CustomCursor from './components/CustomCursor';
 import Footer from './components/Footer';
@@ -9,9 +10,11 @@ import Projects from './pages/Projects';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
+import BlogDetail from './pages/BlogDetail';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
-import './App.css';
+import ProtectedRoute from './components/ProtectedRoute';
+import ScrollToTopButton from './components/ScrollToTopButton';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -27,6 +30,7 @@ function AppLayout() {
 
   return (
     <>
+      <Toaster position="top-right" />
       <ScrollToTop />
       <CustomCursor />
       {!isAdminPage && <Header />}
@@ -37,10 +41,12 @@ function AppLayout() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:id" element={<BlogDetail />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
       </Routes>
       {!isAdminPage && <Footer />}
+      {!isAdminPage && <ScrollToTopButton />}
     </>
   );
 }

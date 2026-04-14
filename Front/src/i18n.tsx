@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 
-export type Language = 'en' | 'ru';
+export type Language = 'en' | 'ru' | 'uz';
 
 interface Translations {
   [key: string]: string | string[] | Translations;
@@ -167,9 +167,12 @@ const translations: Record<Language, Translations> = {
       title: 'What Hotel Owners Say About Us'
     },
     partners: {
-      label: 'Partners & Brands',
-      title: 'We help you work with 70+ international brands',
-      desc: 'We are an accredited partner for Hilton, Wyndham, IHG, Marriott, and other leading global chains.',
+      label: 'Strategic Partners',
+      title: 'Our Key Industry Collaborators',
+      desc: 'We work with leading technology, legal, and operational partners to ensure excellence.',
+      brands_label: 'Global Brands',
+      brands_title: 'Helping you manage 70+ international chains',
+      brands_desc: 'We are an accredited partner for Hilton, Wyndham, IHG, Marriott, and other leading global chains.',
       note: 'Want to implement one of these brands in your hotel? We help at every stage.',
       btn: 'More About Franchise'
     },
@@ -223,6 +226,61 @@ const translations: Record<Language, Translations> = {
         message: 'Your Message',
         submit: 'Send Request',
         success: 'Thank you! Your message has been sent successfully.'
+      }
+    },
+    admin: {
+      sidebar: {
+        dashboard: 'Dashboard',
+        home: 'Home Management',
+        services: 'Services',
+        projects: 'Projects',
+        about: 'About Page',
+        blog: 'Blog Management',
+        media: 'Media gallery',
+        applications: 'Applications',
+        categories: 'Categories',
+        partners: 'Partners',
+        hero: 'Banner Ads (Hero)',
+        stats: 'Statistics',
+        users: 'Users & Roles',
+        settings: 'Settings',
+        logout: 'Logout'
+      },
+      dashboard: {
+        welcome: 'Welcome back',
+        stats: {
+          users: 'Total Users',
+          messages: 'New Messages',
+          posts: 'Blog Posts',
+          projects: 'Live Projects',
+          services: 'Active Services'
+        },
+        activity: 'Recent Activity',
+        analytics: 'Weekly Analytics',
+        quickActions: {
+          title: 'Quick Actions',
+          newPost: 'New News',
+          newPostDesc: 'Add article to blog',
+          slider: 'Main Images',
+          sliderDesc: 'Update slider images',
+          clients: 'Clients',
+          clientsDesc: 'Read new messages'
+        }
+      },
+      common: {
+        save: 'Save Changes',
+        cancel: 'Cancel',
+        add: 'Add New',
+        edit: 'Edit',
+        delete: 'Delete',
+        status: 'Status',
+        active: 'Active',
+        inactive: 'Inactive',
+        actions: 'Actions',
+        search: 'Search...',
+        loading: 'Loading...',
+        success: 'Success!',
+        error: 'Error'
       }
     }
   },
@@ -386,9 +444,12 @@ const translations: Record<Language, Translations> = {
       title: 'Что говорят владельцы отелей о нас'
     },
     partners: {
-      label: 'Партнеры и бренды',
-      title: 'Помогаем работать с 70+ мировыми брендами',
-      desc: 'Мы являемся аккредитованным партнером Hilton, Wyndham, IHG, Marriott и других глобальных сетей.',
+      label: 'Стратегические партнеры',
+      title: 'Наши ключевые отраслевые партнеры',
+      desc: 'Мы работаем с ведущими технологическими и операционными партнерами для достижения совершенства.',
+      brands_label: 'Мировые бренды',
+      brands_title: 'Помогаем управлять 70+ мировыми сетями',
+      brands_desc: 'Мы являемся аккредитованным партнером Hilton, Wyndham, IHG, Marriott и других глобальных сетей.',
       note: 'Хотите внедрить один из этих брендов в своем отеле? Мы поможем на каждом этапе.',
       btn: 'Подробнее о франшизе'
     },
@@ -443,6 +504,338 @@ const translations: Record<Language, Translations> = {
         submit: 'Отправить запрос',
         success: 'Спасибо! Ваше сообщение успешно отправлено.'
       }
+    },
+    admin: {
+      sidebar: {
+        dashboard: 'Дашборд',
+        home: 'Главная страница',
+        services: 'Услуги',
+        projects: 'Проекты',
+        about: 'О компании',
+        blog: 'Блог',
+        media: 'Медиа галерея',
+        applications: 'Заявки и сообщения',
+        categories: 'Категории',
+        partners: 'Партнеры',
+        hero: 'Баннеры (Hero)',
+        stats: 'Статистика',
+        users: 'Пользователи и роли',
+        settings: 'Настройки',
+        logout: 'Выйти'
+      },
+      dashboard: {
+        welcome: 'Добро пожаловать',
+        stats: {
+          users: 'Пользователи',
+          messages: 'Сообщения',
+          posts: 'Статьи',
+          projects: 'Проекты',
+          services: 'Услуги'
+        },
+        activity: 'Последняя активность',
+        analytics: 'Аналитика (Еженедельно)',
+        quickActions: {
+          title: 'Быстрые действия',
+          newPost: 'Новая новость',
+          newPostDesc: 'Добавить статью в блог',
+          slider: 'Главные фото',
+          sliderDesc: 'Обновить фото слайдера',
+          clients: 'Клиенты',
+          clientsDesc: 'Читать новые сообщения'
+        }
+      },
+      common: {
+        save: 'Сохранить',
+        cancel: 'Отмена',
+        add: 'Добавить',
+        edit: 'Изменить',
+        delete: 'Удалить',
+        status: 'Статус',
+        active: 'Активен',
+        inactive: 'Неактивен',
+        actions: 'Действия',
+        search: 'Поиск...',
+        loading: 'Загрузка...',
+        success: 'Успешно!',
+        error: 'Ошибка'
+      }
+    }
+  },
+  uz: {
+    nav: {
+      home: 'Bosh sahifa',
+      services: 'Xizmatlar',
+      projects: 'Loyihalar',
+      about: 'Biz haqimizda',
+      blog: 'Blog',
+      contact: 'Aloqa',
+      cta: 'Maslahat olish'
+    },
+    hero: {
+      label: 'O\'zbekistonda mehmonxona boshqaruvida №1',
+      title: {
+        line1: 'Mehmonxona boshqaruvi —',
+        line2: 'Bizning kamolot san\'atimiz'
+      },
+      desc: 'Biz xalqaro standartlar asosida professional boshqaruv, konsalting va marketing xizmatlarini taqdim etamiz. 15+ yillik tajriba, 60+ muvaffaqiyatli loyiha.',
+      proof: '60+ dan ortiq global ob\'ektlar ishonadi',
+      btn: {
+        services: 'Xizmatlarni ko\'rish',
+        consult: 'Bepul konsultatsiya'
+      },
+      scroll: 'Pastga tushing'
+    },
+    stats: {
+      hotels: 'Boshqariladigan mehmonxonalar',
+      years: 'Yillik tajriba',
+      regions: 'Qamrab olingan hududlar',
+      staff: 'O\'qitilgan mutaxassislar',
+      brands: 'Xalqaro brendlar',
+      satisfaction: 'Mijoz mamnuniyati'
+    },
+    about: {
+      label: 'Biz haqimizda',
+      badge: '2009-yildan beri',
+      title: 'Biz O\'zbekistonda mehmondo\'stlikning yangi standartini yaratdik',
+      p1: 'HotelPro birinchi bo\'lib O\'zbekistonda mehmondo\'stlik sanoatini inqilob qilish uchun tashkil etilgan.',
+      p2: 'Bizning safarimiz 2009-yilda boshlangan va so\'nggi 15 yil ichida biz mamlakat bo\'ylab mehmonxona investorlari va egalari uchun eng ishonchli hamkorga aylandik.',
+      p3: 'Bizning yondashuvimiz chuqur mahalliy bozor bilimlarini xalqaro operatsion mukammallik bilan birlashtiradi.',
+      value1: { title: 'Shaffoflik', desc: 'Batafsil oylik moliyaviy hisobotlar' },
+      value2: { title: 'Natija', desc: 'KPI asosidagi boshqaruv falsafasi' },
+      value3: { title: 'Hamkorlik', desc: 'Egalarining manfaatlari doimo birinchi o\'rinda' },
+      btn: 'Biz haqimizda ko\'proq bilib oling',
+      history: {
+        title: 'Vaqt bo\'ylab qilgan safarimiz',
+        2009: 'HotelPro tashkil etilishi va Toshkentdagi birinchi konsalting loyihasi.',
+        2012: '4-yulduzli ob\'ekt uchun birinchi to\'liq operatsion boshqaruv shartnomasini imzolash.',
+        2015: 'Mahalliy mutaxassislar uchun Mehmondo\'stlik O\'quv Akademiyasining ochilishi.',
+        2018: 'O\'zbekiston bo\'ylab 30 ta boshqariladigan ob\'ektlar marrasiga yetish.',
+        2021: 'Yuqori darajadagi xalqaro franchayzing brendlarining akkreditatsiyalangan hamkori bo\'lish.',
+        2024: '60+ loyihalar va yangi raqamli boshqaruv vositalari bilan ufqlarni kengaytirish.'
+      },
+      philosophy: {
+        title: 'Bizning asosiy falsafamiz',
+        desc: 'Biz ishonamizki, mehmondo\'stlik bu shunchaki xizmat emas; u qat\'iy moliyaviy intizomni saqlab qolgan holda hissiy aloqalar yaratishdir.',
+        points: [
+          'Eng kichik operatsion detallarga e\'tibor qaratish.',
+          'Mehmonlar tajribasida doimiy innovatsiyalar.',
+          'Ta\'lim va mentorlik orqali xodimlarning imkoniyatlarini kengaytirish.',
+          'Daromadlarni boshqarishda ma\'lumotlarga asoslangan qarorlar qabul qilish.'
+        ]
+      },
+      team: {
+        title: 'HotelPro ortidagi vizionerlar bilan tanishing',
+        role1: 'Bosh ijrochi direktor (CEO)',
+        role2: 'Operatsiyalar bo\'yicha direktor',
+        role3: 'Marketing bo\'yicha direktor',
+        role4: 'Sifat nazorati bo\'limi rahbari'
+      }
+    },
+    services: {
+      label: 'Bizning xizmatlar',
+      title: 'Mehmonxonangiz uchun to\'liq siklli yechimlar',
+      desc: 'Dastlabki dizayn bosqichidan boshlab kundalik operatsion boshqaruvgacha — biz har bir qadamda siz bilan birgamiz.',
+      popular: 'Eng ko\'p so\'ralgan',
+      btn: 'Barcha xizmatlarni ko\'rish',
+      management: {
+        title: 'Mehmonxona boshqaruvi',
+        desc: 'Professional jamoa orqali mehmonxonangizni to\'liq operatsion boshqarish. Xodimlar, moliya, sifat nazorati — biz hammasini o\'z zimmamizga olamiz.',
+        features: ['24/7 operatsion nazorat', 'Moliyaviy rejalashtirish va audit', 'HR boshqaruvi va ish haqi', 'Sifat standartlarini joriy etish']
+      },
+      preopening: {
+        title: 'Pre-Opening xizmatlari',
+        desc: 'Ochilishdan 12 oy oldin to\'liq tayyorgarlik: xodimlarni yollash, tizimlar, OTA joylashtirish, brending.',
+        features: ['Timeline boshqaruvi', 'Xodimlarni yollash va o\'qitish', 'Ochilishdan oldingi marketing', 'IT tizimlarini sozlash (PMS/POS)']
+      },
+      consulting: {
+        title: 'Konsalting va tahlil',
+        desc: 'Bozorni o\'rganish, raqobatchilar tahlili, ROI hisob-kitoblari. Investitsiya qilishdan oldin to\'g\'ri qarorlar qabul qiling.',
+        features: ['Texnik-iqtisodiy asoslar', 'Konseptsiyani ishlab chiqish', 'Texnik maslahatlar', 'Moliyaviy prognozlar']
+      },
+      marketing: {
+        title: 'Marketing va daromad',
+        desc: 'OTA platformalarini boshqarish, narxlash strategiyasi, raqamli marketing va maksimal foyda uchun brend yaratish.',
+        features: ['Daromadni optimallashtirish', 'Raqamli audit', 'Ijtimoiy tarmoqlarni boshqarish', 'To\'g\'ridan-to\'g\'ri bron qilish strategiyalari']
+      },
+      training: {
+        title: 'Xodimlarni o\'qitish',
+        desc: 'Front-office, Housekeeping va F&B xodimlari uchun xalqaro standartdagi o\'qitish va sertifikatlash.',
+        features: ['Soft Skills mahorati', 'Standard Operating Procedures', 'Upselling texnikasi', 'Xizmat madaniyati bo\'yicha seminar']
+      },
+      franchise: {
+        title: 'Franchise brendlar',
+        desc: 'Hilton, Wyndham, IHG va 70 dan ortiq boshqa xalqaro brendlardan franchayzing olishda to\'liq yordam va qo\'llab-quvvatlash.',
+        features: ['Brend tanlash bo\'yicha maslahat', 'Shartnoma muzokaralari', 'Dizayn muvofiqligi', 'Brend standartlari auditi']
+      },
+      faq: {
+        title: 'Ko\'p so\'raladigan savollar',
+        q1: 'Pre-opening jarayoni qancha davom etadi?',
+        a1: 'Ideal pre-opening jarayoni 10 dan 12 oygacha davom etadi, ammo biz uni loyiha murakkabligiga qarab moslashtirishimiz mumkin.',
+        q2: 'Boshqaruv uchun to\'lov qanday hisoblanadi?',
+        a2: 'Biz odatda asosiy to\'lov va yalpi operatsion foydaga (GOP) asoslangan rag\'batlantiruvchi to\'lov kombinatsiyasidan foydalanamiz.',
+        q3: 'O\'zbekistonning barcha hududlarida ishlaysizmi?',
+        a3: 'Ha, bizning Farg\'ona vodiysidan Qoraqalpog\'istongacha bo\'lgan har bir viloyatda muvaffaqiyatli loyihalarimiz mavjud.'
+      }
+    },
+    process: {
+      label: 'Ish jarayoni',
+      title: 'Biz bilan ishlash sodda va shaffof',
+      desc: 'Birinchi qo\'ng\'iroqdan muvaffaqiyatli ishga tushirishgacha — har bir qadam aniq belgilangan.',
+      step1: { title: 'So\'rov', time: '1 kun', desc: 'Siz biz bilan bog\'lanasiz va biz ob\'ektingiz haqida asosiy ma\'lumotlarni to\'playmiz.' },
+      step2: { title: 'Audit', time: '3-7 kun', desc: 'Bizning ekspertlarimiz bino, jamoa va bozorni tahlil qilish uchun tashrif buyurishadi.' },
+      step3: { title: 'Taklif', time: '2-3 kun', desc: 'Biz individual boshqaruv rejasi va hamkorlik shartlarini taqdim etamiz.' },
+      step4: { title: 'Amalga oshirish', time: '30-60 kun', desc: 'Boshqaruv jamoasi, IT tizimlari va standartlar o\'rnatiladi.' },
+      step5: { title: 'Operatsion boshqaruv', time: 'Davomli', desc: 'Mehmonxona bizning kundalik nazoratimiz va strategiyamiz ostida ishlaydi.' },
+      step6: { title: 'Tahlil va o\'sish', time: 'Har chorakda', desc: 'Biz chuqur KPI tahlilini o\'tkazamiz va o\'sish strategiyasini yangilaymiz.' }
+    },
+    projects: {
+      label: 'Bizning loyihalar',
+      title: 'Biz boshqargan va ishga tushirgan mehmonxonalar',
+      desc: 'O\'zbekiston bo\'ylab professional rahbarligimiz ostida gullab-yashnayotgan muvaffaqiyatli ob\'ektlar.',
+      btn: 'Barcha loyihalarni ko\'rish',
+      filters: {
+        all: 'Barcha loyihalar',
+        management: 'Boshqaruv',
+        preopening: 'Pre-Opening',
+        consulting: 'Konsalting',
+        marketing: 'Marketing va sotuvlar'
+      },
+      metrics: {
+        rooms: 'Xonalar',
+        growth: 'Daromad o\'sishi',
+        occ: 'Bandlik darajasi'
+      }
+    },
+    why: {
+      label: 'Nima uchun biz?',
+      title: 'Shunchaki boshqaruv emas — umumiy muvaffaqiyat',
+      adv1: { title: 'Xalqaro tajriba, mahalliy bilim', desc: 'Biz global standartlarni O\'zbekiston bozorining o\'ziga xos xususiyatlariga moslashtiramiz.' },
+      adv2: { title: 'Shaffof moliyaviy hisobot', desc: 'Har oyda siz Daromad, RevPAR, ADR va GOP bo\'yicha aniq hisobotlarni olasiz.' },
+      adv3: { title: 'KPI asosida ishlash', desc: 'Biz natija bo\'yicha haq olamiz. Biz sizning daromadingiz o\'sgandagina o\'samiz.' },
+      adv4: { title: 'Doimiy sifat nazorati', desc: 'Haqiqiy fikr-mulohazalar va "Maxfiy mehmon" auditlari orqali nazorat.' },
+      adv5: { title: 'To\'liq texnik yordam', desc: 'PMS, Channel Manager va Revenue tizimlarini o\'rnatish va boshqarish.' },
+      adv6: { title: 'Huquqiy qo\'llab-quvvatlash', desc: 'Soliq, mehnat va yulduz standartlariga to\'liq muvofiqlikni ta\'minlash.' }
+    },
+    testimonials: {
+      label: 'Mijozlarimiz',
+      title: 'Mehmonxona egalari biz haqimizda nima deyishadi'
+    },
+    partners: {
+      label: 'Strategik hamkorlar',
+      title: 'Asosiy sanoat hamkorlarimiz',
+      desc: 'Biz mukammallikka erishish uchun yetakchi texnologiya, huquqiy va operatsion hamkorlar bilan ishlaymiz.',
+      brands_label: 'Global brendlar',
+      brands_title: '70 dan ortiq xalqaro tarmoqlarni boshqarishga yordam beramiz',
+      brands_desc: 'Biz Hilton, Wyndham, IHG, Marriott va boshqa jahon yetakchi tarmoqlari uchun akkreditatsiyadan o\'tgan hamkormiz.',
+      note: 'Mehmonxonangizda ushbu brendlardan birini joriy qilmoqchimisiz? Biz har bir bosqichda yordam beramiz.',
+      btn: 'Franchayzing haqida batafsil'
+    },
+    media: {
+      title: 'Qanday ishlashimizni ko\'ring',
+      desc: 'Zamonaviy mehmondo\'stlik boshqaruviga bo\'lgan yondashuvimiz haqida 2 daqiqalik video sharh.'
+    },
+    blog: {
+      label: 'Blog va yangiliklar',
+      title: 'Mehmondo\'stlik sohasidagi so\'nggi maqolalar',
+      btn: 'Barcha maqolalar',
+      read: 'Batafsil o\'qish'
+    },
+    geo: {
+      label: 'Qamrov',
+      title: 'Butun respublika bo\'ylab xizmat qilamiz',
+      projects: 'loyihalar',
+      note: 'Boshqa hududlarda ham xizmat ko\'rsatish imkoniyati mavjud. Biz bilan bog\'laning.'
+    },
+    cta: {
+      label: 'Bepul birinchi qadam',
+      title: 'Mehmonxonangizni biz bilan keyingi bosqichga olib chiqing',
+      desc: '30 daqiqalik bepul konsultatsiyada biz ob\'ektingizni tahlil qilamiz va optimal boshqaruv modelini taklif qilamiz.',
+      btn: {
+        write: 'Telegramda yozing',
+        call: 'Hozir qo\'ng\'iroq qiling'
+      },
+      or: 'Yoki'
+    },
+    footer: {
+      desc: 'O\'zbekistondagi yetakchi mehmondo\'stlik boshqaruv kompaniyasi. 2009-yildan beri 60+ mehmonxona muvaffaqiyatli boshqarildi.',
+      pages: 'Sahifalar',
+      services: 'Xizmatlar',
+      contact: 'Biz bilan bog\'lanish',
+      worktime: { label: 'Ish vaqti', value: 'Du-Ju, 9:00–18:00' },
+      copyright: 'Barcha huquqlar himoyalangan.',
+      privacy: 'Maxfiylik siyosati',
+      terms: 'Foydalanish shartlari',
+      dev: 'Dasturlagan'
+    },
+    contact: {
+      title: 'Biz bilan bog\'lanish',
+      desc: 'Loyihangizni muhokama qilishga tayyormisiz? Bizning ekspertlarimiz foydali mehmonxona biznesini qurishda yordam berishadi.',
+      map: { label: 'Bizning manzilimiz' },
+      form: {
+        title: 'Xabar yuboring',
+        desc: 'Quyidagi shaklni to\'ldiring va biz 24 soat ichida siz bilan bog\'lanamiz.',
+        name: 'To\'liq ismingiz',
+        phone: 'Telefon raqamingiz',
+        service: 'Qiziqtirgan xizmat',
+        message: 'Xabaringiz',
+        submit: 'So\'rov yuborish',
+        success: 'Rahmat! Xabaringiz muvaffaqiyatli yuborildi.'
+      }
+    },
+    admin: {
+      sidebar: {
+        dashboard: 'Bosh boshqaruv',
+        home: 'Asosiy sahifa',
+        services: 'Xizmatlar',
+        projects: 'Loyihalar',
+        about: 'Biz haqimizda',
+        blog: 'Yangiliklar',
+        media: 'Media galereya',
+        applications: 'Mijoz xabarlari',
+        categories: 'Kategoriyalar',
+        partners: 'Hamkorlar',
+        hero: 'Bannerlar (Hero)',
+        stats: 'Statistika',
+        users: 'Foydalanuvchilar',
+        settings: 'Sozlamalar',
+        logout: 'Chiqish'
+      },
+      dashboard: {
+        welcome: 'Xush kelibsiz',
+        stats: {
+          users: 'Foydalanuvchilar',
+          messages: 'Yangi xabarlar',
+          posts: 'Postlar',
+          projects: 'Loyihalar',
+          services: 'Xizmatlar'
+        },
+        activity: 'Oxirgi harakatlar',
+        analytics: 'Haftalik tahlil',
+        quickActions: {
+          title: 'Tezkor amallar',
+          newPost: 'Yangi yangilik',
+          newPostDesc: 'Blogga yangi maqola qo\'shish',
+          slider: 'Asosiy rasmlar',
+          sliderDesc: 'Slayder rasmlarini yangilash',
+          clients: 'Mijozlar',
+          clientsDesc: 'Kelgan xabarlarni o\'qish'
+        }
+      },
+      common: {
+        save: 'O\'zgarishlarni saqlash',
+        cancel: 'Bekor qilish',
+        add: 'Yangi qo\'shish',
+        edit: 'Tahrirlash',
+        delete: 'O\'chirish',
+        status: 'Holat',
+        active: 'Faol',
+        inactive: 'Nofaol',
+        actions: 'Amallar',
+        search: 'Qidirish...',
+        loading: 'Yuklanmoqda...',
+        success: 'Muvaffaqiyatli!',
+        error: 'Xatolik'
+      }
     }
   }
 };
@@ -457,7 +850,9 @@ const I18nContext = createContext<I18nContextProps | undefined>(undefined);
 
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLangState] = useState<Language>(() => {
-    return (localStorage.getItem('lang') as Language) || 'en';
+    const saved = localStorage.getItem('lang');
+    if (saved === 'en' || saved === 'ru' || saved === 'uz') return saved as Language;
+    return 'uz'; // Default to Uzbek for this project as requested previously
   });
 
   const setLang = (newLang: Language) => {

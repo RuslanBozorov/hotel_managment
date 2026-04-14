@@ -1,16 +1,42 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 import ScrollReveal from '../components/ScrollReveal';
 import { useI18n } from '../i18n';
 import * as api from '../services/api';
+import HeroSection from '../components/common/HeroSection';
 import './Contact.css';
 
 export default function Contact() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [dbSettings, setDbSettings] = useState<Record<string, api.Setting>>({});
+  const [categories, setCategories] = useState<api.Category[]>([]);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [sett, cats] = await Promise.all([
+          api.settingsApi.getAll(""),
+          api.categoriesApi.getAll()
+        ]);
+        
+        const sMap: Record<string, api.Setting> = {};
+        if (Array.isArray(sett)) {
+          sett.forEach(s => sMap[s.key] = s);
+        }
+        setDbSettings(sMap);
+        setCategories(Array.isArray(cats) ? cats : []);
+      } catch (err) { 
+        console.error("Data fetch error in Contact:", err); 
+      } finally {
+        setIsCategoriesLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,16 +64,16 @@ export default function Contact() {
 
   return (
     <main>
-      <section className="page-hero" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1445019980597-93fa8acb246c)' }}>
-        <div className="page-hero__overlay" />
-        <div className="container page-hero__content">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-            <span className="page-hero__label">{t('nav.contact')}</span>
-            <h1 className="page-hero__title">{t('contact.title')}</h1>
-            <p className="page-hero__desc">{t('contact.desc')}</p>
-          </motion.div>
-        </div>
-      </section>
+      <HeroSection 
+        variant="page"
+        content={{
+          titleLine1: (lang === 'ru' ? dbSettings['contact_hero_title']?.value_ru : dbSettings['contact_hero_title']?.value_en) || t('contact.title'),
+          description: (lang === 'ru' ? dbSettings['contact_hero_desc']?.value_ru : dbSettings['contact_hero_desc']?.value_en) || t('contact.desc'),
+          images: [(lang === 'ru' ? dbSettings['contact_hero_image']?.value_ru : dbSettings['contact_hero_image']?.value_en) || 'https://media.istockphoto.com/id/2217340726/photo/hotel-reception-desk-with-vintage-silver-bell.webp?a=1&b=1&s=612x612&w=0&k=20&c=wGqtsj35-a-GvnpbMZX_W1ESOFR4hTbFnAX12XAFPE8='],
+          label: t('nav.contact'),
+          breadcrumbs: [{ label: t('nav.contact'), path: '/contact' }]
+        }}
+      />
 
       <section className="section">
         <div className="container">
@@ -67,10 +93,13 @@ export default function Contact() {
                   </div>
                   <div className="form-group">
                     <label className="form-label">{t('contact.form.service')}</label>
-                    <select name="service_type" className="form-select">
-                      <option value="">{t('contact.form.service')}</option>
-                      <option>{t('services.management.title')}</option>
-                      <option>{t('services.consulting.title')}</option>
+                    <select name="service_type" className="form-select" disabled={isCategoriesLoading}>
+                      <option value="">{isCategoriesLoading ? 'Loading service list...' : t('contact.form.service')}</option>
+                      {categories.map(cat => (
+                        <option key={cat.id} value={cat.name_en}>
+                          {lang === 'ru' ? cat.name_ru : cat.name_en}
+                        </option>
+                      ))}
                     </select>
                   </div>
                   <div className="form-group">

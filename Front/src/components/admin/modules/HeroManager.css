@@ -1,0 +1,198 @@
+.hero-manager-container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  min-height: calc(100vh - 160px);
+}
+
+.hero-controls {
+  width: 320px;
+  flex: 0 0 420px; /* Fixed narrower width for controls */
+  background: white;
+  padding: 10px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  /* The controls naturally dictate height, no artificial overflow needed unless restricted */
+}
+
+.hero-preview-sticky {
+  flex: 1; /* Take all remaining space */
+  position: sticky;
+  top: 40px;
+  background: #f8fafc;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-xl);
+  height: calc(100vh - 80px);
+}
+
+.preview-header {
+  padding: 16px 24px;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.preview-badge {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid #fde68a;
+}
+
+.preview-window-container {
+  flex: 1;
+  overflow: auto; /* Allow scrolling if frame is too big */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background: radial-gradient(circle at center, #f8fafc 0%, #e2e8f0 100%);
+  position: relative;
+}
+
+/* --- PREMIUM IPHONE FRAME --- */
+.iphone-frame {
+  width: 340px; 
+  height: 720px; 
+  background: #1e293b;
+  border-radius: 46px;
+  border: 12px solid #0f172a;
+  position: relative;
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,0.3);
+  overflow: hidden;
+  flex-shrink: 0;
+  margin: auto;
+}
+
+.iphone-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 30px;
+  background: #0f172a;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  z-index: 10;
+}
+
+.iphone-screen {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: white;
+}
+
+/* --- PREMIUM MACBOOK FRAME --- */
+.macbook-frame {
+  width: 95%;
+  max-width: 1200px;
+  aspect-ratio: 16/10;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 20px auto;
+  transition: all 0.3s ease;
+}
+
+.macbook-topbar {
+  height: 32px;
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 8px;
+}
+
+.macbook-dot { width: 10px; height: 10px; border-radius: 50%; }
+.dot-red { background: #ef4444; }
+.dot-yellow { background: #f59e0b; }
+.dot-green { background: #10b981; }
+
+.macbook-screen {
+  width: 100%;
+  flex: 1; /* Take the remaining height of the aspect-ratio frame */
+  background: white;
+  overflow-y: auto; 
+  position: relative;
+}
+
+/* Custom scrollbar for preview */
+.macbook-screen::-webkit-scrollbar {
+  width: 6px;
+}
+.macbook-screen::-webkit-scrollbar-track {
+  background: transparent;
+}
+.macbook-screen::-webkit-scrollbar-thumb {
+  background: var(--color-gold, #cfb53b);
+  border-radius: 3px;
+}
+
+.field-section {
+  margin-bottom: 32px;
+  padding: 14px;
+  background: var(--adm-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--adm-border);
+}
+
+.field-section h3 {
+  font-size: 1rem;
+  color: var(--adm-primary);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 1600px) {
+  .lang-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero-manager-container {
+    flex-direction: column;
+    height: auto;
+  }
+  .hero-preview-sticky {
+    position: relative;
+    top: 0;
+    margin-top: 32px;
+  }
+  .preview-window {
+    transform: scale(1);
+    width: 100%;
+  }
+}

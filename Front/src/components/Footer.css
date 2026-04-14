@@ -1,7 +1,7 @@
 .footer {
   background: var(--color-primary);
   color: rgba(255, 255, 255, 0.7);
-  padding: 80px 0 0;
+  padding: 60px 0 0;
 }
 
 .footer__grid {
@@ -137,10 +137,10 @@ a.footer__contact:hover {
 }
 
 
-.footer__bottom p {
-  font-size: 0.85rem;
-  color: rgba(255, 255, 255, 0.35);
-  max-width: none;
+.footer__copyright-text, .footer__bottom p {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
 }
 
 .footer__bottom-links {

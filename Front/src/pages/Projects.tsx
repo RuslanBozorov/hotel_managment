@@ -1,16 +1,20 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaMapMarkerAlt, FaStar, FaArrowRight } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import HeroSection from '../components/common/HeroSection';
 import ScrollReveal from '../components/ScrollReveal';
+import ProjectCard from '../components/ProjectCard';
 import { useI18n } from '../i18n';
 import * as api from '../services/api';
 import './Projects.css';
 
 export default function Projects() {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [filter, setFilter] = useState<string>('all');
   const [dbProjects, setDbProjects] = useState<api.Project[]>([]);
+  const [dbCategories, setDbCategories] = useState<api.Category[]>([]);
+  const [dbSettings, setDbSettings] = useState<Record<string, api.Setting>>({});
 
   const initialProjects: any[] = [
     { id: 101, name: 'Hilton Tashkent City', city: 'Tashkent', stars: 5, role: 'Full Management', category: 'management', image_url: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791' },
@@ -25,27 +29,58 @@ export default function Projects() {
     { id: 110, name: 'Nukus Desert Oasis', city: 'Nukus', stars: 3, role: 'Staff Training', category: 'preopening', image_url: 'https://images.unsplash.com/photo-1566073771259-6a8506099945' },
   ];
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
       try {
-        const data = await api.projectsApi.getAll(""); // Backend doesn't strictly need token for GET if we want public access
+        const [data, catData, settingsData] = await Promise.all([
+          api.projectsApi.getAll(""),
+          api.categoriesApi.getAll(""),
+          api.settingsApi.getAll("")
+        ]);
         setDbProjects(data);
+        setDbCategories(Array.isArray(catData) ? catData : []);
+        const sMap: Record<string, api.Setting> = {};
+        if (Array.isArray(settingsData)) {
+          settingsData.forEach(s => sMap[s.key] = s);
+        }
+        setDbSettings(sMap);
       } catch (err) {
-        console.error("Failed to fetch projects:", err);
+        console.error("Failed to fetch data:", err);
       }
     };
-    fetchProjects();
+    fetchData();
   }, []);
 
+  const allProjects = dbProjects.length > 0 ? dbProjects : initialProjects;
+
   const filteredProjects = filter === 'all' 
-    ? (dbProjects.length > 0 ? dbProjects : initialProjects) 
-    : (dbProjects.length > 0 ? dbProjects : initialProjects).filter(p => {
-        const cat = p.category?.toLowerCase() || '';
-        if (filter === 'marketingandsales') return cat.includes('marketing') || cat.includes('sales');
-        return cat.includes(filter);
+    ? allProjects 
+    : allProjects.filter(p => {
+        const cat = (p.category || '').toLowerCase();
+        return cat === filter || cat.includes(filter);
       });
 
-  const filters = [
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
+  const totalPages = Math.ceil(filteredProjects.length / itemsPerPage);
+  const currentProjects = filteredProjects.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  // Build dynamic filter list from categories API
+  const dynamicFilters = [
+    { id: 'all', label: t('projects.filters.all') || 'All' },
+    ...dbCategories.map(cat => ({
+      id: cat.slug,
+      label: lang === 'ru' ? cat.name_ru : cat.name_en,
+    }))
+  ];
+
+  // Fallback to hardcoded if no categories from DB
+  const fallbackFilters = [
     { id: 'all', label: t('projects.filters.all') },
     { id: 'management', label: t('projects.filters.management') },
     { id: 'preopening', label: t('projects.filters.preopening') },
@@ -53,23 +88,24 @@ export default function Projects() {
     { id: 'marketing', label: 'Marketing & Sales' },
   ];
 
+  const filters = dbCategories.length > 0 ? dynamicFilters : fallbackFilters;
+
+
+
   return (
     <main className="projects-page">
-      {/* 1. HERO */}
-      <section className="projects-hero" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1566073771259-6a8506099945)' }}>
-        <div className="projects-hero__overlay" />
-        <div className="container projects-hero__content">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <nav className="breadcrumbs">
-              <Link to="/">{t('nav.home')}</Link> / <span>{t('nav.projects')}</span>
-            </nav>
-            <h1 className="projects-hero__title">{t('projects.title')}</h1>
-            <p className="projects-hero__desc">{t('projects.desc')}</p>
-          </motion.div>
-        </div>
-      </section>
+      <HeroSection 
+        variant="page"
+        content={{
+          titleLine1: (lang === 'ru' ? dbSettings['projects_hero_title']?.value_ru : dbSettings['projects_hero_title']?.value_en) || t('projects.title'),
+          description: (lang === 'ru' ? dbSettings['projects_hero_desc']?.value_ru : dbSettings['projects_hero_desc']?.value_en) || t('projects.desc'),
+          images: [(lang === 'ru' ? dbSettings['projects_hero_image']?.value_ru : dbSettings['projects_hero_image']?.value_en) || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b'],
+          label: t('nav.projects'),
+          breadcrumbs: [{ label: t('nav.projects'), path: '/projects' }]
+        }}
+      />
 
-      {/* 2. FILTER BAR */}
+      {/* 2. DYNAMIC FILTER BAR */}
       <section className="projects-filters">
         <div className="container">
           <div className="filters-container">
@@ -94,58 +130,53 @@ export default function Projects() {
             className="portfolio-grid"
           >
             <AnimatePresence mode="popLayout">
-              {filteredProjects.map((project) => (
-                <motion.div
-                  key={project.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.4 }}
-                  className="portfolio-card"
-                >
-                  <div className="portfolio-card__image img-placeholder">
-                    {project.image_url ? (
-                      <img src={project.image_url} alt={project.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                      <span>{project.name.substring(0, 2).toUpperCase()}</span>
-                    )}
-                    <div className="portfolio-card__badge">
-                      {project.category}
-                    </div>
-                  </div>
-                  
-                  <div className="portfolio-card__content">
-                    <div className="portfolio-card__top">
-                      <h3>{project.name}</h3>
-                      <div className="stars">
-                        {[...Array(project.stars)].map((_, i) => (
-                          <FaStar key={i} className="text-gold" />
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <p className="portfolio-card__loc">
-                      <FaMapMarkerAlt /> {project.city}
-                    </p>
-                    
-                    <div className="portfolio-card__metrics">
-                       <div className="metric">
-                        <span className="metric-label">Role</span>
-                        <span className="metric-value">
-                          {t('nav.home') === 'Home' ? (project.role_en || project.role) : (project.role_ru || project.role)}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <Link to="/contact" className="portfolio-card__link">
-                      {t('nav.cta')} <FaArrowRight />
-                    </Link>
-                  </div>
-                </motion.div>
+              {currentProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} lang={lang} />
               ))}
             </AnimatePresence>
           </motion.div>
+
+          {totalPages > 1 && (
+            <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '60px' }}>
+              <button 
+                className={`adm-btn adm-btn-outline ${currentPage === 1 ? 'disabled' : ''}`}
+                onClick={() => { setCurrentPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                disabled={currentPage === 1}
+                style={{ padding: '12px 24px', opacity: currentPage === 1 ? 0.5 : 1 }}
+              >
+                Prev
+              </button>
+              
+              <div style={{ display: 'flex', gap: '8px' }}>
+                {[...Array(totalPages)].map((_, i) => (
+                  <button
+                    key={i + 1}
+                    className={`adm-btn ${currentPage === i + 1 ? 'adm-btn-primary' : 'adm-btn-outline'}`}
+                    onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                    style={{ 
+                      minWidth: '45px', 
+                      height: '45px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '10px'
+                    }}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+              </div>
+
+              <button 
+                className={`adm-btn adm-btn-outline ${currentPage === totalPages ? 'disabled' : ''}`}
+                onClick={() => { setCurrentPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 400, behavior: 'smooth' }); }}
+                disabled={currentPage === totalPages}
+                style={{ padding: '12px 24px', opacity: currentPage === totalPages ? 0.5 : 1 }}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

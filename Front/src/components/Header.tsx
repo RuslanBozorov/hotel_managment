@@ -1,19 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes, FaPhone } from 'react-icons/fa';
+import { FaBars, FaTimes, FaPhone, FaChevronDown, FaGlobe } from 'react-icons/fa';
 import { useI18n } from '../i18n';
 import type { Language } from '../i18n';
+import * as api from '../services/api';
 import './Header.css';
 
-const langs: { code: Language; label: string }[] = [
-  { code: 'en', label: 'EN' },
-  { code: 'ru', label: 'RU' },
+const langs: { code: Language; label: string; name: string }[] = [
+  { code: 'en', label: 'EN', name: 'English' },
+  { code: 'ru', label: 'RU', name: 'Русский' },
 ];
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isLangOpen, setIsLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const { lang, setLang, t } = useI18n();
 
@@ -26,6 +29,9 @@ export default function Header() {
     { path: '/contact', label: t('nav.contact') },
   ];
 
+  const [phone, setPhone] = useState('+998 90 123 45 67');
+  const [siteName, setSiteName] = useState({ en: 'HotelPro', ru: 'HotelPro' });
+
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', onScroll);
@@ -33,16 +39,54 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await api.settingsApi.getAll();
+        const settingsMap: Record<string, any> = {};
+        if (Array.isArray(data)) {
+          data.forEach(s => settingsMap[s.key] = s);
+        }
+        if (settingsMap['contact_phone']?.value_en) {
+          setPhone(settingsMap['contact_phone'].value_en);
+        }
+        if (settingsMap['site_name']) {
+          setSiteName({
+            en: settingsMap['site_name'].value_en || 'HotelPro',
+            ru: settingsMap['site_name'].value_ru || 'HotelPro'
+          });
+        }
+      } catch (err) {
+        console.error("Failed to fetch settings", err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (langRef.current && !langRef.current.contains(event.target as Node)) {
+        setIsLangOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  useEffect(() => {
     document.body.style.overflow = isMobileOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isMobileOpen]);
 
+  const currentLang = langs.find(l => l.code === lang);
+
   return (
     <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${isMobileOpen ? 'header--mobile-open' : ''}`}>
-      <div className="header__inner container">
+      <div className="header__inner">
         <Link to="/" className="header__logo">
-          <span className="header__logo-icon">H</span>
-          <span className="header__logo-text">Hotel<span className="text-gold">Pro</span></span>
+          <span className="header__logo-icon">{(lang === 'ru' ? siteName.ru : siteName.en).charAt(0)}</span>
+          <span className="header__logo-text">
+            {lang === 'ru' ? siteName.ru : siteName.en}
+          </span>
           <span className="header__logo-since">Since 2009</span>
         </Link>
 
@@ -59,15 +103,33 @@ export default function Header() {
         </nav>
 
         <div className="header__actions">
-          <div className="header__lang">
-            {langs.map((l) => (
-              <button key={l.code}
-                className={`header__lang-btn ${lang === l.code ? 'header__lang-btn--active' : ''}`}
-                onClick={() => setLang(l.code)}>{l.label}</button>
-            ))}
+          <div className="header__lang-dropdown" ref={langRef}>
+            <button className="header__lang-toggle" onClick={() => setIsLangOpen(!isLangOpen)}>
+              <FaGlobe size={14} />
+              <span>{currentLang?.label}</span>
+              <FaChevronDown size={10} className={isLangOpen ? 'rotated' : ''} />
+            </button>
+            <AnimatePresence>
+              {isLangOpen && (
+                <motion.div className="header__lang-menu"
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}>
+                  {langs.map((l) => (
+                    <button key={l.code}
+                      className={`header__lang-item ${lang === l.code ? 'header__lang-item--active' : ''}`}
+                      onClick={() => { setLang(l.code); setIsLangOpen(false); }}>
+                      <span className="item-label">{l.label}</span>
+                      <span className="item-name">{l.name}</span>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <a href="tel:+998901234567" className="header__phone">
-            <FaPhone size={11} /> +998 90 123 45 67
+          <a href={`tel:${phone.replace(/\s+/g, '')}`} className="header__phone">
+            <FaPhone size={11} /> {phone}
           </a>
           <Link to="/contact" className="btn btn--primary btn--sm header__cta">{t('nav.cta')}</Link>
           <button className="header__burger" onClick={() => setIsMobileOpen(!isMobileOpen)} aria-label="Menu">

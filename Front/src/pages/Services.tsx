@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaArrowRight, FaHotel, FaDoorOpen, FaChartLine, FaBullhorn, FaUserGraduate, FaKey, FaPlus, FaMinus } from 'react-icons/fa';
+import { FaArrowRight, FaPlus, FaMinus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import ScrollReveal from '../components/ScrollReveal';
 import { useI18n } from '../i18n';
 import * as api from '../services/api';
+import { getIcon } from '../utils/iconMap';
+import HeroSection from '../components/common/HeroSection';
 import './Services.css';
 
 export default function Services() {
@@ -12,6 +14,7 @@ export default function Services() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [dbServices, setDbServices] = useState<api.Service[]>([]);
   const [dbFaqs, setDbFaqs] = useState<api.Faq[]>([]);
+  const [dbSettings, setDbSettings] = useState<Record<string, api.Setting>>({});
 
   const initialServices: any[] = [
     {
@@ -48,12 +51,19 @@ export default function Services() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [serv, faqData] = await Promise.all([
+        const [serv, faqData, settingsData] = await Promise.all([
           api.servicesApi.getAll(""),
-          api.faqsApi.getAll("")
+          api.faqsApi.getAll(""),
+          api.settingsApi.getAll("")
         ]);
         setDbServices(serv);
         if (faqData.length > 0) setDbFaqs(faqData);
+        
+        const sMap: Record<string, api.Setting> = {};
+        if (Array.isArray(settingsData)) {
+          settingsData.forEach((s: api.Setting) => sMap[s.key] = s);
+        }
+        setDbSettings(sMap);
       } catch (err) {
         console.error("Failed to fetch data:", err);
       }
@@ -61,17 +71,6 @@ export default function Services() {
     fetchData();
   }, []);
 
-  const getIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'management': return FaHotel;
-      case 'preopening': return FaDoorOpen;
-      case 'consulting': return FaChartLine;
-      case 'marketing': return FaBullhorn;
-      case 'training': return FaUserGraduate;
-      case 'franchise': return FaKey;
-      default: return FaHotel;
-    }
-  };
 
   const faqs = [
     { q: t('services.faq.q1'), a: t('services.faq.a1') },
@@ -88,22 +87,19 @@ export default function Services() {
 
   return (
     <main className="services-page">
-      {/* 1. HERO */}
-      <section className="services-hero" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1549488344-1f9b8d2bd1f3)' }}>
-        <div className="services-hero__overlay" />
-        <div className="container services-hero__content">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <nav className="breadcrumbs">
-              <Link to="/">{t('nav.home')}</Link> / <span>{t('nav.services')}</span>
-            </nav>
-            <h1 className="services-hero__title">{t('services.title')}</h1>
-            <p className="services-hero__desc">{t('services.desc')}</p>
-          </motion.div>
-        </div>
-      </section>
+      <HeroSection 
+        variant="page"
+        content={{
+          titleLine1: (lang === 'ru' ? dbSettings['services_hero_title']?.value_ru : dbSettings['services_hero_title']?.value_en) || t('services.title'),
+          description: (lang === 'ru' ? dbSettings['services_hero_desc']?.value_ru : dbSettings['services_hero_desc']?.value_en) || t('services.desc'),
+          images: [(lang === 'ru' ? dbSettings['services_hero_image']?.value_ru : dbSettings['services_hero_image']?.value_en) || 'https://media.istockphoto.com/id/1448506100/photo/male-hotel-receptionist-assisting-female-guest.webp?a=1&b=1&s=612x612&w=0&k=20&c=e9q7dxDwt0v0fK1nE4v3_Vwpl7N4YBr4lSe5IHhCbs0='],
+          label: t('nav.services'),
+          breadcrumbs: [{ label: t('nav.services'), path: '/services' }]
+        }}
+      />
 
       {/* 2. DETAILED SECTIONS */}
-      {(dbServices.length > 0 ? dbServices : initialServices).map((s, i) => {
+      {(dbServices.length > 0 ? dbServices : initialServices).map((s: any, i: number) => {
         const Icon = getIcon(s.icon || '');
         return (
           <section key={s.id} className={`section ${i % 2 === 0 ? '' : 'section--alt'} service-detail`}>

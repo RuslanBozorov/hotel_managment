@@ -1,6 +1,17 @@
-from sqlalchemy import Column, Integer, String, Text, Boolean, Float, DateTime
+from sqlalchemy import Column, Integer, String, Text, Boolean, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
+
+class Category(Base):
+    __tablename__ = "categories"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name_en = Column(String, nullable=False)
+    name_ru = Column(String, nullable=False)
+    slug = Column(String, unique=True, index=True, nullable=False)
+
+    projects = relationship("Project", back_populates="category_rel")
 
 class Service(Base):
     __tablename__ = "services"
@@ -25,7 +36,9 @@ class Project(Base):
     stars = Column(Integer, default=5)
     image_url = Column(String, nullable=True)
     is_featured = Column(Boolean, default=False)
-    category = Column(String, default="Management")
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+
+    category_rel = relationship("Category", back_populates="projects")
 
 class Application(Base):
     __tablename__ = "applications"
@@ -65,6 +78,9 @@ class TeamMember(Base):
     fullname = Column(String)
     role_en = Column(String)
     role_ru = Column(String)
+    bio_en = Column(Text, nullable=True)
+    bio_ru = Column(Text, nullable=True)
+    telegram = Column(String, nullable=True)
     image_url = Column(String, nullable=True)
     linkedin = Column(String, nullable=True)
     email = Column(String, nullable=True)
@@ -84,6 +100,7 @@ class Partner(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String)
     logo_url = Column(String, nullable=True)
+    category = Column(String, default="brand") # brand, partner
 
 class Blog(Base):
     __tablename__ = "blogs"
@@ -93,6 +110,7 @@ class Blog(Base):
     content_en = Column(Text)
     content_ru = Column(Text)
     category = Column(String)
+    author = Column(String, default="Admin")
     image_url = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 

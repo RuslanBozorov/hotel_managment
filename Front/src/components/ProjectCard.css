@@ -1,0 +1,443 @@
+/* ====================================================================
+   LUXURY PROPERTY PROJECT CARD
+   Grid System: Fixed-height uniform cards with controlled expansion
+   
+   HEIGHT BUDGET (Desktop — 520px total):
+   ┌──────────────────────────────┐
+   │  Header (image)    ~240px   │  46% — aspect-ratio: 16/10
+   │──────────────────────────────│
+   │  Body (content)    ~224px   │  43% — flex: 1, overflow contained
+   │    Title            ~50px   │
+   │    Description     ~140px   │
+   │    Toggle btn       ~34px   │
+   │──────────────────────────────│
+   │  Footer             ~56px   │  11% — flex-shrink: 0, pinned bottom
+   └──────────────────────────────┘
+   ==================================================================== */
+
+.project-card {
+  position: relative;
+  width: 100%;
+  height: 350px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  transition: transform var(--transition-smooth),
+              box-shadow var(--transition-smooth),
+              border-color var(--transition-smooth);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+
+.project-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--color-gold);
+}
+
+/* ==== 1. HEADER — Image Container (46% of card) ==== */
+.project-card__header {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  flex-shrink: 0;
+  overflow: hidden;
+  background-color: var(--color-primary-light);
+}
+
+.card-img-resilient {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.project-card:hover .card-img-resilient {
+  transform: scale(1.1);
+}
+
+/* Floating Badges — Glassmorphism */
+.project-card__badges {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 5;
+}
+
+.project-card__stars-badge,
+.project-card__location-badge {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.project-card__stars-badge {
+  color: var(--color-gold);
+}
+
+/* ==== 2. BODY — Content Area (43%, flex-fills remainder) ==== */
+.project-card__body {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 20px 24px;
+  background-color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;
+}
+
+.project-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+  line-height: 1.3;
+  flex-shrink: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Description wrapper — contains text + toggle */
+.project-card__description-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Default (collapsed) — clamp to 3 lines */
+.project-card__description {
+  color: #6b7280;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-bottom: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* ==== EXPANDED STATE — Internal Scroll, Zero Layout Shift ==== */
+
+/* Card height stays FIXED — no growth, no grid disruption */
+.project-card--expanded .project-card__description {
+  /* Release line-clamp */
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  display: block;
+
+  /* Internal scroll within the remaining body space */
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+
+  /* Invisible scrollbar — functional but hidden */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  /* Gradient fade — signals more content below */
+  mask-image: linear-gradient(to bottom, #000 75%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, #000 75%, transparent 100%);
+}
+
+.project-card--expanded .project-card__description::-webkit-scrollbar {
+  display: none;
+}
+
+/* "Batafsil" / "Learn More" toggle */
+.project-card__toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-gold-dark);
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 6px 0 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.project-card__toggle-btn:hover {
+  color: var(--color-gold);
+}
+
+/* Admin panel — no footer variant */
+.project-card--no-footer .project-card__footer {
+  display: none;
+}
+
+/* ==== 3. FOOTER — Pinned to Bottom (flex-shrink: 0) ==== */
+.project-card__footer {
+  background-color: #f5f2e9;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.project-card__status {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-primary);
+}
+
+/* Navy Button with Gold Border */
+.project-card__btn-enquire {
+  background-color: #2d3e50;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid var(--color-gold);
+  transition: all var(--transition-base);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.project-card__btn-enquire:hover {
+  background-color: #3b4f63;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* ====================================================================
+   RESPONSIVE BREAKPOINTS
+   
+   Mobile Height Budget:
+   ┌──────────────────────────────┐
+   │  Tablet  (≤768px)   360px   │  1-col grid, 16/9 image
+   │  Phablet (≤480px)   340px   │  Compact padding, 2-line clamp
+   │  Small   (≤360px)   320px   │  Ultra-compact, minimal chrome
+   └──────────────────────────────┘
+   ==================================================================== */
+
+/* ===== TABLET (≤768px) — Single Column, Touch-First ===== */
+@media (max-width: 768px) {
+
+  /* Card dimensions */
+  .project-card {
+    height: 360px;
+  }
+
+  .project-card__header {
+    height: 160px;
+  }
+
+  /* Disable hover — no hover capability on touch */
+  .project-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-sm);
+    border-color: var(--color-border);
+  }
+
+  /* Active state — tactile feedback on press */
+  .project-card:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-gold);
+  }
+
+  /* Body padding */
+  .project-card__body {
+    padding: 16px 20px;
+  }
+
+  /* Typography */
+  .project-card__title {
+    font-size: 1.15rem;
+    margin-bottom: 6px;
+  }
+
+  .project-card__description {
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  /* Expanded — elastic scroll for mobile touch */
+  .project-card--expanded .project-card__description {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Footer */
+  .project-card__footer {
+    padding: 12px 20px;
+  }
+
+  /* Touch-friendly buttons — Apple HIG 44px minimum */
+  .project-card__btn-enquire {
+    padding: 10px 20px;
+    min-height: 44px;
+    font-size: 0.8rem;
+  }
+
+  .project-card__btn-enquire:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .project-card__btn-enquire:active {
+    background-color: #3b4f63;
+    transform: scale(0.96);
+  }
+
+  /* Toggle — touch-friendly */
+  .project-card__toggle-btn {
+    min-height: 44px;
+    padding: 10px 0;
+    font-size: 0.76rem;
+  }
+
+  .project-card__toggle-btn:hover {
+    color: var(--color-gold-dark);
+  }
+
+  .project-card__toggle-btn:active {
+    color: var(--color-gold);
+  }
+
+  /* Badges — slightly compact */
+  .project-card__badges {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+  }
+
+  .project-card__stars-badge,
+  .project-card__location-badge {
+    padding: 6px 14px;
+    font-size: 0.65rem;
+  }
+}
+
+/* ===== PHABLET (≤480px) — Compact Layout ===== */
+@media (max-width: 480px) {
+
+  .project-card {
+    height: 340px;
+  }
+
+  .project-card__header {
+    height: 140px;
+  }
+
+  .project-card__body {
+    padding: 14px 16px;
+  }
+
+  .project-card__title {
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+  }
+
+  .project-card__description {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .project-card__footer {
+    padding: 10px 16px;
+  }
+
+  .project-card__status {
+    font-size: 0.7rem;
+  }
+
+  .project-card__btn-enquire {
+    padding: 8px 16px;
+    font-size: 0.75rem;
+    min-height: 40px;
+  }
+
+  .project-card__toggle-btn {
+    font-size: 0.7rem;
+    min-height: 40px;
+    padding: 8px 0;
+  }
+
+  .project-card__badges {
+    top: 8px;
+    left: 8px;
+    right: 8px;
+  }
+
+  .project-card__stars-badge,
+  .project-card__location-badge {
+    padding: 5px 10px;
+    font-size: 0.58rem;
+    gap: 4px;
+  }
+}
+
+/* ===== SMALL SCREENS (≤360px) — Ultra-Compact ===== */
+@media (max-width: 360px) {
+
+  .project-card {
+    height: 320px;
+  }
+
+  .project-card__header {
+    height: 120px;
+  }
+
+  .project-card__body {
+    padding: 12px 14px;
+  }
+
+  .project-card__title {
+    font-size: 1rem;
+  }
+
+  .project-card__description {
+    font-size: 0.8rem;
+  }
+
+  .project-card__footer {
+    padding: 8px 14px;
+  }
+
+  .project-card__btn-enquire {
+    padding: 7px 12px;
+    font-size: 0.72rem;
+  }
+}

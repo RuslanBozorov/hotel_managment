@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  FaArrowRight, FaChevronDown, FaStar, FaHotel, FaGlobeAmericas, FaUsers,
-  FaShieldAlt, FaHandshake, FaChartLine, FaAward,
+  FaArrowRight, FaHotel, FaGlobeAmericas,
+  FaShieldAlt, FaChartLine, FaAward,
   FaCertificate, FaPhone, FaTelegramPlane, FaSearch, FaFileContract,
   FaCogs, FaRocket, FaQuoteLeft, FaChevronLeft, FaChevronRight,
   FaDoorOpen, FaBullhorn, FaUserGraduate, FaPaintBrush, FaPlayCircle,
@@ -11,52 +11,72 @@ import {
 } from 'react-icons/fa';
 import ScrollReveal from '../components/ScrollReveal';
 import AnimatedCounter from '../components/AnimatedCounter';
+import ProjectCard from '../components/ProjectCard';
 import { useI18n } from '../i18n';
 import * as api from '../services/api';
+import { getIcon } from '../utils/iconMap';
+import { formatTelegramLink } from '../utils/formatters';
+import HeroSection from '../components/common/HeroSection';
 import './Home.css';
 
 export default function Home() {
   const { t, lang } = useI18n();
   const [testimonialIndex, setTestimonialIndex] = useState(0);
-  const [heroBgIndex, setHeroBgIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [dbProjects, setDbProjects] = useState<api.Project[]>([]);
+  const [featuredProjects, setFeaturedProjects] = useState<api.Project[]>([]);
   const [dbServices, setDbServices] = useState<api.Service[]>([]);
   const [dbStats, setDbStats] = useState<api.Stat[]>([]);
   const [dbTestimonials, setDbTestimonials] = useState<api.Testimonial[]>([]);
   const [dbPartners, setDbPartners] = useState<api.Partner[]>([]);
   const [dbBlogs, setDbBlogs] = useState<api.Blog[]>([]);
+  const [dbSettings, setDbSettings] = useState<Record<string, api.Setting>>({});
   const [isLoading, setIsLoading] = useState(true);
 
   // === DATA ===
-  const heroImages = [
-    'https://avatars.mds.yandex.net/i?id=521bfc2d883b6f15195e47d11789e37fa85b9138-10119934-images-thumbs&n=13', // Hotel Exterior (Yandex)
-    'https://img.freepik.com/premium-photo/interior-space-big-bed-room-luxury-hotel_1112-7131.jpg'          // Hotel Bedroom (Freepik)
+  const defaultHeroImages = [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1920&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=1920&auto=format&fit=crop'
   ];
 
+  const heroImages = [
+    dbSettings['hero_image_1']?.value_en || defaultHeroImages[0],
+    dbSettings['hero_image_2']?.value_en || defaultHeroImages[1]
+  ];
+
+
+
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroBgIndex((prev) => (prev + 1) % heroImages.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [heroImages.length]);
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [proj, serv, st, tst, prt, blg] = await Promise.all([
+        const [proj, serv, st, tst, prt, blg, sett] = await Promise.all([
           api.projectsApi.getAll(""),
           api.servicesApi.getAll(""),
           api.statsApi.getAll(""),
           api.testimonialsApi.getAll(""),
           api.partnersApi.getAll(""),
-          api.blogsApi.getAll("")
+          api.blogsApi.getAll(""),
+          api.settingsApi.getAll("")
         ]);
-        setDbProjects(proj.filter(p => p.is_featured).slice(0, 6));
+        // For coverage/projects, use ALL projects from database
+        setDbProjects(proj);
+        // For featured section on home, filter only featured projects
+        setFeaturedProjects(proj.filter((p: api.Project) => p.is_featured).slice(0, 6));
         setDbServices(serv.slice(0, 6));
         if (st.length > 0) setDbStats(st);
         if (tst.length > 0) setDbTestimonials(tst);
         if (prt.length > 0) setDbPartners(prt);
         setDbBlogs(blg.slice(0, 3));
+        
+        const settingsMap: Record<string, api.Setting> = {};
+        sett.forEach((s: api.Setting) => settingsMap[s.key] = s);
+        setDbSettings(settingsMap);
       } catch (err) {
         console.error("Home data fetch error:", err);
       } finally {
@@ -66,13 +86,13 @@ export default function Home() {
     fetchData();
   }, []);
 
-  const stats = [
-    { icon: FaHotel, value: 60, suffix: '+', label: t('stats.hotels') },
-    { icon: FaGlobeAmericas, value: 15, suffix: '+', label: t('stats.years') },
-    { icon: FaMapMarkerAlt, value: 12, suffix: '', label: t('stats.regions') },
-    { icon: FaUsers, value: 500, suffix: '+', label: t('stats.staff') },
-    { icon: FaHandshake, value: 70, suffix: '+', label: t('stats.brands') },
-    { icon: FaAward, value: 98, suffix: '%', label: t('stats.satisfaction') },
+  const defaultStats = [
+    { icon: 'FaHotel', value: '60+', label_en: 'Hotels', label_ru: 'Отели' },
+    { icon: 'FaGlobeAmericas', value: '15+', label_en: 'Experience', label_ru: 'Опыт' },
+    { icon: 'FaMapMarkerAlt', value: '12', label_en: 'Regions', label_ru: 'Регионы' },
+    { icon: 'FaUsers', value: '500+', label_en: 'Staff', label_ru: 'Сотрудники' },
+    { icon: 'FaHandshake', value: '70+', label_en: 'Brands', label_ru: 'Бренды' },
+    { icon: 'FaAward', value: '98%', label_en: 'Satisfaction', label_ru: 'Удовлетворённость' },
   ];
 
   const services = [
@@ -93,7 +113,7 @@ export default function Home() {
     { icon: FaRocket, titleKey: 'process.step6.title', timeKey: 'process.step6.time', descKey: 'process.step6.desc' },
   ];
 
-  const featuredProjects = [
+  const fallbackProjects = [
     { id: 101, name: 'Hilton Tashkent City', city: 'Tashkent', stars: 5, role: 'Full Management', image_url: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791' },
     { id: 102, name: 'Registan Plaza Samarkand', city: 'Samarkand', stars: 4, role: 'Pre-Opening', image_url: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb' },
     { id: 103, name: 'Bukhara Palace Resort', city: 'Bukhara', stars: 5, role: 'Profit Optimization', image_url: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d' },
@@ -135,8 +155,28 @@ export default function Home() {
     },
   ];
 
-  const partnersRow1 = ['Hilton', 'Wyndham', 'IHG', 'Marriott', 'Accor', 'Best Western', 'Radisson', 'Hyatt'];
-  const partnersRow2 = ['Choice Hotels', 'NH Hotels', 'Mövenpick', 'Kempinski', 'Rotana', 'Dusit', 'Rixos', 'Premier Inn'];
+  const defaultPartners1 = [
+    { name: 'Hilton', logo_url: '' }, { name: 'Wyndham', logo_url: '' }, 
+    { name: 'IHG', logo_url: '' }, { name: 'Marriott', logo_url: '' }, 
+    { name: 'Accor', logo_url: '' }, { name: 'Best Western', logo_url: '' }, 
+    { name: 'Radisson', logo_url: '' }, { name: 'Hyatt', logo_url: '' }
+  ];
+  
+  const defaultPartners2 = [
+    { name: 'Choice Hotels', logo_url: '' }, { name: 'NH Hotels', logo_url: '' }, 
+    { name: 'Mövenpick', logo_url: '' }, { name: 'Kempinski', logo_url: '' }, 
+    { name: 'Rotana', logo_url: '' }, { name: 'Dusit', logo_url: '' }, 
+    { name: 'Rixos', logo_url: '' }, { name: 'Premier Inn', logo_url: '' }
+  ];
+
+  // Dynamic distribution by category if dbPartners has items
+  const dynamicPartners1 = dbPartners.length > 0 
+    ? dbPartners.filter(p => p.category === 'partner')
+    : defaultPartners1;
+    
+  const dynamicPartners2 = dbPartners.length > 0
+    ? dbPartners.filter(p => p.category === 'brand')
+    : defaultPartners2;
 
   const blogArticles = [
     {
@@ -158,14 +198,48 @@ export default function Home() {
     },
   ];
 
-  const regionsData = [
+  const fallbackRegionsData = [
     { name: 'Tashkent', count: 15 }, { name: 'Samarkand', count: 8 },
     { name: 'Bukhara', count: 6 }, { name: 'Khorezm', count: 4 },
     { name: 'Kashkadarya', count: 3 }, { name: 'Surkhandarya', count: 2 },
     { name: 'Fergana', count: 5 }, { name: 'Namangan', count: 3 },
-    { name: 'Andijan', count: 2 }, { name: 'Tashkent Region', count: 7 },
-    { name: 'Jizzakh', count: 2 }, { name: 'Sirdarya', count: 1 },
+    { name: 'Andijan', count: 2 }, { name: 'Jizzakh', count: 2 }, 
+    { name: 'Sirdarya', count: 1 }, { name: 'Navoiy', count: 1 }
   ];
+
+  const dynamicRegionsData = React.useMemo(() => {
+    if (!dbProjects || dbProjects.length === 0) return fallbackRegionsData;
+    
+    const counts: Record<string, number> = {};
+    
+    // Normalize city names to match coordinates mapping
+    const mapCity = (c: string) => {
+      if (!c) return 'Tashkent';
+      const cl = c.toLowerCase();
+      if (cl.includes('tash') || cl.includes('tosh') || cl.includes('тошк')) return 'Tashkent';
+      if (cl.includes('sam') || cl.includes('самарк')) return 'Samarkand';
+      if (cl.includes('bux') || cl.includes('bukh') || cl.includes('бухар')) return 'Bukhara';
+      if (cl.includes('xor') || cl.includes('khor') || cl.includes('хорез')) return 'Khorezm';
+      if (cl.includes('qash') || cl.includes('kash') || cl.includes('кашк')) return 'Kashkadarya';
+      if (cl.includes('surx') || cl.includes('surk') || cl.includes('сурх')) return 'Surkhandarya';
+      if (cl.includes('farg') || cl.includes('ferg') || cl.includes('ферг')) return 'Fergana';
+      if (cl.includes('nam') || cl.includes('наман')) return 'Namangan';
+      if (cl.includes('and') || cl.includes('андиж')) return 'Andijan';
+      if (cl.includes('jiz') || cl.includes('жиз')) return 'Jizzakh';
+      if (cl.includes('sir') || cl.includes('syr') || cl.includes('сырд')) return 'Sirdarya';
+      if (cl.includes('nav') || cl.includes('наво')) return 'Navoiy';
+      return 'Tashkent';
+    };
+
+    dbProjects.forEach(proj => {
+      const city = mapCity(proj.city);
+      counts[city] = (counts[city] || 0) + 1;
+    });
+
+    return Object.entries(counts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+  }, [dbProjects]);
 
   const nextTestimonial = () => {
     const len = dbTestimonials.length > 0 ? dbTestimonials.length : testimonials.length;
@@ -190,83 +264,57 @@ export default function Home() {
 
   return (
     <main>
-      {/* ===== 1. HERO (WITH SLIDER) ===== */}
-      <section className="hero">
-        <AnimatePresence mode="popLayout">
-          <motion.div
-            key={heroBgIndex}
-            className="hero__bg-image"
-            style={{ backgroundImage: `url(${heroImages[heroBgIndex]})` }}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }}
-          />
-        </AnimatePresence>
-        <div className="hero__overlay" />
-        <div className="container hero__content">
-          <motion.div className="hero__text"
-            initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}>
-            <span className="hero__label">{t('hero.label')}</span>
-            <h1 className="hero__title">
-              {t('hero.title.line1')}<br />
-              <span className="text-gradient">{t('hero.title.line2')}</span>
-            </h1>
-            <p className="hero__desc">{t('hero.desc')}</p>
-            <div className="hero__proof">
-              <div className="hero__proof-stars">
-                {[...Array(5)].map((_, i) => <FaStar key={i} />)}
-              </div>
-              <span>{t('hero.proof')}</span>
-            </div>
-            <div className="hero__btns">
-              <Link to="/services" className="btn btn--primary btn--lg">
-                {t('hero.btn.services')} <FaArrowRight />
-              </Link>
-              <Link to="/contact" className="btn btn--outline btn--lg">
-                {t('hero.btn.consult')}
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-        <motion.div className="hero__scroll"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.5 }}>
-          <span>{t('hero.scroll')}</span>
-          <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 1.5 }}>
-            <FaChevronDown />
-          </motion.div>
-        </motion.div>
-      </section>
+      <HeroSection 
+        content={{
+          label: (lang === 'ru' ? dbSettings['hero_label']?.value_ru : dbSettings['hero_label']?.value_en) || t('hero.label'),
+          titleLine1: (lang === 'ru' ? dbSettings['hero_title_l1']?.value_ru : dbSettings['hero_title_l1']?.value_en) || t('hero.title.line1'),
+          titleLine2: (lang === 'ru' ? dbSettings['hero_title_l2']?.value_ru : dbSettings['hero_title_l2']?.value_en) || t('hero.title.line2'),
+          description: (lang === 'ru' ? dbSettings['hero_desc']?.value_ru : dbSettings['hero_desc']?.value_en) || t('hero.desc'),
+          images: heroImages,
+          proofText: t('hero.proof')
+        }}
+      />
 
       {/* ===== 2. STATS ===== */}
       <section className="section stats-section">
         <div className="container">
           <div className="stats-grid">
-            {(dbStats.length > 0 ? dbStats : stats).map((stat: any, i) => {
-              const valStr = String(stat.value);
-              const numPart = parseInt(valStr.replace(/[^0-9]/g, '')) || 0;
-              const suffixPart = valStr.replace(/[0-9]/g, '') || (stat.suffix || '');
-              const label = stat.label || (lang === 'ru' ? stat.label_ru : stat.label_en);
-              
-              return (
-                <ScrollReveal key={i} delay={i * 0.08}>
-                  <div className="stat-card">
-                    <FaHotel className="stat-card__icon" />
-                    <div className="stat-card__value">
-                      <AnimatedCounter end={numPart} suffix={suffixPart} />
+            {isLoading ? (
+              // Skeleton Loader
+              [1, 2, 3, 4].map((n) => (
+                <div key={`skel-${n}`} className="stat-card skeleton pulse" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#e2e8f0', opacity: 0.7 }} />
+                  <div style={{ width: '80%', height: '36px', borderRadius: '4px', background: '#e2e8f0', opacity: 0.7 }} />
+                  <div style={{ width: '60%', height: '16px', borderRadius: '4px', background: '#e2e8f0', opacity: 0.7 }} />
+                </div>
+              ))
+            ) : (
+              (dbStats.length > 0 ? dbStats : defaultStats).map((stat: any, i) => {
+                const valStr = String(stat.value);
+                const numPart = parseInt(valStr.replace(/[^0-9]/g, '')) || 0;
+                const suffixPart = valStr.replace(/[0-9]/g, '') || '';
+                const label = lang === 'ru' ? stat.label_ru : stat.label_en;
+                const Icon = getIcon(stat.icon);
+                
+                return (
+                  <ScrollReveal key={stat.id || `stat-${i}`} delay={i * 0.08}>
+                    <div className="stat-card">
+                      <Icon className="stat-card__icon" />
+                      <div className="stat-card__value">
+                        <AnimatedCounter end={numPart} suffix={suffixPart} />
+                      </div>
+                      <div className="stat-card__label">{label}</div>
                     </div>
-                    <div className="stat-card__label">{label}</div>
-                  </div>
-                </ScrollReveal>
-              );
-            })}
+                  </ScrollReveal>
+                );
+              })
+            )}
           </div>
         </div>
       </section>
 
-      {/* ===== 3. PARTNERS ===== */}
-      <section className="partners-section partners-section--top">
+      {/* ===== 3. STRATEGIC PARTNERS (Marquee: Logo + Name) ===== */}
+      <section className="section section--alt partners-marquee-section">
         <div className="container">
           <ScrollReveal>
             <div className="section-header section-header--compact">
@@ -276,15 +324,42 @@ export default function Home() {
             </div>
           </ScrollReveal>
         </div>
-        <div className="partners-track-wrapper">
-          <div className="partners-track partners-track--left">
-            {(dbPartners.length > 0 ? dbPartners.map(p => p.name) : partnersRow1).concat(dbPartners.length > 0 ? dbPartners.map(p => p.name) : partnersRow1).map((b, i) => (
-              <div key={i} className="partner-logo"><span>{b}</span></div>
+        
+        <div className="partners-track-wrapper partners-track-wrapper--partners">
+          <div className="partners-track partners-track--left partners-track--slow">
+            {dynamicPartners1.concat(dynamicPartners1).map((p: any, i) => (
+              <div key={`partner-rich-${i}`} className="partner-logo partner-logo--rich">
+                <div className="partner-logo__img-box">
+                  {p.logo_url ? (
+                    <img src={p.logo_url} alt={p.name} loading="lazy" />
+                  ) : (
+                    <FaHotel className="fallback-icon" />
+                  )}
+                </div>
+                <span className="partner-logo__name">{p.name}</span>
+              </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ===== 3.1 GLOBAL BRANDS (Marquee: Text Only) ===== */}
+      <section className="partners-section brands-marquee-section">
+        <div className="container">
+          <ScrollReveal>
+            <div className="section-header section-header--compact">
+              <span className="section-header__label">{t('partners.brands_label')}</span>
+              <h2 className="section-header__title">{t('partners.brands_title')}</h2>
+              <div className="section-header__line" />
+            </div>
+          </ScrollReveal>
+        </div>
+        <div className="partners-track-wrapper partners-track-wrapper--brands">
           <div className="partners-track partners-track--right">
-            {(dbPartners.length > 0 ? dbPartners.map(p => p.name) : partnersRow2).concat(dbPartners.length > 0 ? dbPartners.map(p => p.name) : partnersRow2).map((b, i) => (
-              <div key={i} className="partner-logo"><span>{b}</span></div>
+            {dynamicPartners2.concat(dynamicPartners2).map((p: any, i) => (
+              <div key={`brand-text-${i}`} className="partner-logo partner-logo--text">
+                <span className="partner-logo__name">{p.name}</span>
+              </div>
             ))}
           </div>
         </div>
@@ -297,30 +372,55 @@ export default function Home() {
             <ScrollReveal direction="left">
               <div className="about-teaser__image-wrap">
                 <div className="about-teaser__image">
-                  <img src="https://images.unsplash.com/photo-1541336032412-2048a678540d" alt="Hotel Lobby Interior" />
+                  <img 
+                    src={(lang === 'ru' ? dbSettings['home_about_image']?.value_ru : dbSettings['home_about_image']?.value_en) || "https://media.istockphoto.com/id/1320779330/photo/detail-of-a-five-stars-hotel.jpg?s=612x612&w=0&k=20&c=BPoqGxvmF3lGMGyuf0DAlQ7no9UGZ7s80Kiwn7nYSCo="} 
+                    alt="About HotelPro" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                 </div>
-                <div className="about-teaser__badge">{t('about.badge')}</div>
+                <div className="about-teaser__badge">
+                   {(lang === 'ru' ? dbSettings['home_about_badge']?.value_ru : dbSettings['home_about_badge']?.value_en) || t('about.badge')}
+                </div>
               </div>
             </ScrollReveal>
             <ScrollReveal direction="right">
               <div className="about-teaser__content">
-                <span className="section-label">{t('about.label')}</span>
-                <h2>{t('about.title')}</h2>
-                <p>{t('about.p1')}</p>
-                <p>{t('about.p2')}</p>
-                <p>{t('about.p3')}</p>
+                <span className="section-label">
+                  {(lang === 'ru' ? dbSettings['home_about_label']?.value_ru : dbSettings['home_about_label']?.value_en) || t('about.label')}
+                </span>
+                <h2>
+                  {(lang === 'ru' ? dbSettings['home_about_title']?.value_ru : dbSettings['home_about_title']?.value_en) || t('about.title')}
+                </h2>
+                <p>
+                  {(lang === 'ru' ? dbSettings['home_about_p1']?.value_ru : dbSettings['home_about_p1']?.value_en) || t('about.p1')}
+                </p>
+                {!dbSettings['home_about_p1'] && (
+                  <>
+                    <p>{t('about.p2')}</p>
+                    <p>{t('about.p3')}</p>
+                  </>
+                )}
                 <div className="about-teaser__values">
                   <div className="about-teaser__value-item">
                     <span className="about-teaser__value-icon">✦</span>
-                    <div><strong>{t('about.value1.title')}</strong><span>{t('about.value1.desc')}</span></div>
+                    <div>
+                      <strong>{(lang === 'ru' ? dbSettings['home_about_v1_t']?.value_ru : dbSettings['home_about_v1_t']?.value_en) || t('about.value1.title')}</strong>
+                      <span>{(lang === 'ru' ? dbSettings['home_about_v1_d']?.value_ru : dbSettings['home_about_v1_d']?.value_en) || t('about.value1.desc')}</span>
+                    </div>
                   </div>
                   <div className="about-teaser__value-item">
                     <span className="about-teaser__value-icon">✦</span>
-                    <div><strong>{t('about.value2.title')}</strong><span>{t('about.value2.desc')}</span></div>
+                    <div>
+                      <strong>{(lang === 'ru' ? dbSettings['home_about_v2_t']?.value_ru : dbSettings['home_about_v2_t']?.value_en) || t('about.value2.title')}</strong>
+                      <span>{(lang === 'ru' ? dbSettings['home_about_v2_d']?.value_ru : dbSettings['home_about_v2_d']?.value_en) || t('about.value2.desc')}</span>
+                    </div>
                   </div>
                   <div className="about-teaser__value-item">
                     <span className="about-teaser__value-icon">✦</span>
-                    <div><strong>{t('about.value3.title')}</strong><span>{t('about.value3.desc')}</span></div>
+                    <div>
+                      <strong>{(lang === 'ru' ? dbSettings['home_about_v3_t']?.value_ru : dbSettings['home_about_v3_t']?.value_en) || t('about.value3.title')}</strong>
+                      <span>{(lang === 'ru' ? dbSettings['home_about_v3_d']?.value_ru : dbSettings['home_about_v3_d']?.value_en) || t('about.value3.desc')}</span>
+                    </div>
                   </div>
                 </div>
                 <Link to="/about" className="btn btn--primary">{t('about.btn')} <FaArrowRight /></Link>
@@ -346,19 +446,21 @@ export default function Home() {
               const isDb = !!s.id;
               const title = isDb ? (lang === 'ru' ? s.title_ru : s.title_en) : t(s.titleKey);
               const desc = isDb ? (lang === 'ru' ? s.desc_ru : s.desc_en) : t(s.descKey);
-              const Icon = isDb ? FaHotel : s.icon;
+              const Icon = isDb ? getIcon(s.icon) : s.icon;
               const isPopular = isDb ? s.is_popular : s.popular;
 
               return (
                 <ScrollReveal key={isDb ? s.id : i} delay={i * 0.08}>
-                  <Link to="/services" className="service-preview-card">
+                  <Link to="/services" className="service-preview-card card-flex-col">
                     {isPopular && <span className="service-preview-card__badge">{t('services.popular')}</span>}
                     <div className="service-preview-card__icon-wrap">
                       <Icon className="service-preview-card__icon" />
                     </div>
-                    <h3 className="service-preview-card__title">{title}</h3>
-                    <p className="service-preview-card__desc">{desc}</p>
-                    <span className="service-preview-card__link">{t('services.btn')} <FaArrowRight /></span>
+                    <h3 className="service-preview-card__title text-clamp-1">{title}</h3>
+                    <p className="service-preview-card__desc text-clamp-3">{desc}</p>
+                    <div style={{ marginTop: 'auto' }}>
+                      <span className="service-preview-card__link">{t('services.btn')} <FaArrowRight /></span>
+                    </div>
                   </Link>
                 </ScrollReveal>
               );
@@ -413,28 +515,11 @@ export default function Home() {
             </div>
           </ScrollReveal>
           <div className="portfolio-grid">
-            {(dbProjects.length > 0 ? dbProjects : featuredProjects).map((project: any, i) => (
-              <ScrollReveal key={project.id} delay={i * 0.08}>
-                <div className="portfolio-card">
-                  <div className="portfolio-card__image img-placeholder">
-                    {project.image_url ? (
-                      <img src={project.image_url} alt={project.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                      <FaHotel />
-                    )}
-                  </div>
-                  <div className="portfolio-card__overlay">
-                    <div className="portfolio-card__stars">
-                      {[...Array(project.stars)].map((_, j) => <FaStar key={j} />)}
-                    </div>
-                    <h3 className="portfolio-card__title">{project.name}</h3>
-                    <p className="portfolio-card__location">{project.city}</p>
-                    <span className="portfolio-card__role">
-                      {lang === 'ru' ? (project.role_ru || project.role) : (project.role_en || project.role)}
-                    </span>
-                  </div>
-                </div>
-              </ScrollReveal>
+            {/* If projects haven't loaded yet, but we want skeletons, wait... Home uses featuredProjects as fallback immediately.
+                So we can either show the data or skeletons. Let's just map it smoothly. */}
+            {(featuredProjects.length > 0 ? featuredProjects : fallbackProjects).slice(0, isMobile ? 4 : undefined)
+              .map((project: any, i) => (
+              <ProjectCard key={project.id || `feat-${i}`} project={project} lang={lang} />
             ))}
           </div>
           <ScrollReveal>
@@ -451,27 +536,42 @@ export default function Home() {
           <div className="why-grid">
             <ScrollReveal direction="left">
               <div className="why-content">
-                <span className="section-label">{t('why.label')}</span>
-                <h2>{t('why.title')}</h2>
+                <span className="section-label">
+                    {(lang === 'ru' ? dbSettings['home_why_label']?.value_ru : dbSettings['home_why_label']?.value_en) || t('why.label')}
+                </span>
+                <h2>
+                    {(lang === 'ru' ? dbSettings['home_why_title']?.value_ru : dbSettings['home_why_title']?.value_en) || t('why.title')}
+                </h2>
                 <div className="why-list">
-                  {advantages.map((adv, i) => (
-                    <div key={i} className="why-item">
-                      <div className="why-item__icon-wrap"><adv.icon /></div>
-                      <div>
-                        <h4>{t(adv.titleKey)}</h4>
-                        <p>{t(adv.descKey)}</p>
+                  {advantages.map((adv, i) => {
+                    const idx = i + 1;
+                    const dbTitle = lang === 'ru' ? dbSettings[`home_why_a${idx}_t`]?.value_ru : dbSettings[`home_why_a${idx}_t`]?.value_en;
+                    const dbDesc = lang === 'ru' ? dbSettings[`home_why_a${idx}_d`]?.value_ru : dbSettings[`home_why_a${idx}_d`]?.value_en;
+                    
+                    return (
+                      <div key={i} className="why-item">
+                        <div className="why-item__icon-wrap"><adv.icon /></div>
+                        <div>
+                          <h4>{dbTitle || t(adv.titleKey)}</h4>
+                          <p>{dbDesc || t(adv.descKey)}</p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </ScrollReveal>
             <ScrollReveal direction="right">
               <div className="why-visual">
                  <div className="why-visual__image">
-                   <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0" alt="Team Work" />
+                   <img 
+                    src={(lang === 'ru' ? dbSettings['home_why_image']?.value_ru : dbSettings['home_why_image']?.value_en) || "https://images.unsplash.com/photo-1542744173-8e7e53415bb0"} 
+                    alt="Team Work" 
+                   />
                  </div>
-                <div className="why-visual__badge">15+ {lang === 'ru' ? 'лет опыта' : 'years experience'}</div>
+                <div className="why-visual__badge">
+                    {(lang === 'ru' ? dbSettings['home_why_badge']?.value_ru : dbSettings['home_why_badge']?.value_en) || `15+ ${lang === 'ru' ? 'лет опыта' : 'years experience'}`}
+                </div>
               </div>
             </ScrollReveal>
           </div>
@@ -500,7 +600,7 @@ export default function Home() {
                   </p>
                   <div className="testimonial-card__author">
                     <div className="testimonial-card__avatar">
-                      {dbTestimonials[testimonialIndex].author.split(' ').map(n => n[0]).join('')}
+                      {dbTestimonials[testimonialIndex].author.split(' ').map((n: string) => n[0]).join('')}
                     </div>
                     <div>
                       <strong>{dbTestimonials[testimonialIndex].author}</strong>
@@ -549,12 +649,18 @@ export default function Home() {
         <div className="container">
           <ScrollReveal>
             <div className="media-block">
-              <div className="media-block__video img-placeholder">
+              <a 
+                href={dbSettings['home_media_video_link']?.value_en || '#'} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="media-block__video img-placeholder"
+                style={dbSettings['home_media_image']?.value_en ? { backgroundImage: `url(${dbSettings['home_media_image'].value_en})`, backgroundSize: 'cover', backgroundPosition: 'center', borderColor: 'transparent' } : {}}
+              >
                 <FaPlayCircle className="media-block__play" />
-              </div>
+              </a>
               <div className="media-block__text">
-                <h2>{t('media.title')}</h2>
-                <p>{t('media.desc')}</p>
+                <h2>{(lang === 'ru' ? dbSettings['home_media_title']?.value_ru : dbSettings['home_media_title']?.value_en) || t('media.title')}</h2>
+                <p>{(lang === 'ru' ? dbSettings['home_media_desc']?.value_ru : dbSettings['home_media_desc']?.value_en) || t('media.desc')}</p>
               </div>
             </div>
           </ScrollReveal>
@@ -572,25 +678,30 @@ export default function Home() {
             </div>
           </ScrollReveal>
           <div className="blog-preview-grid">
-            {(dbBlogs.length > 0 ? dbBlogs : blogArticles).map((article: any, i) => (
-              <ScrollReveal key={i} delay={i * 0.1}>
-                <article className="blog-preview-card">
-                  <div className="blog-preview-card__image img-placeholder">
-                    {article.image_url ? <img src={article.image_url} alt={article.title_en} /> : <FaTag />}
-                  </div>
-                  <div className="blog-preview-card__body">
-                    <div className="blog-preview-card__meta">
-                      <span className="blog-preview-card__category">{article.category}</span>
-                      <span className="blog-preview-card__date">
-                        <FaCalendarAlt /> {article.created_at ? new Date(article.created_at).toLocaleDateString() : article.date}
+            {(dbBlogs.length > 0 ? dbBlogs : blogArticles).map((article: any, i) => {
+              const linkUrl = article.id ? `/blog/${article.id}` : '/blog';
+              return (
+                <ScrollReveal key={i} delay={i * 0.1}>
+                  <Link to={linkUrl} className="blog-preview-card" style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}>
+                    <div className="blog-preview-card__image img-placeholder">
+                      {article.image_url ? <img src={article.image_url} alt={article.title_en} /> : <FaTag />}
+                    </div>
+                    <div className="blog-preview-card__body">
+                      <div className="blog-preview-card__meta">
+                        <span className="blog-preview-card__category">{article.category}</span>
+                        <span className="blog-preview-card__date">
+                          <FaCalendarAlt /> {article.created_at ? new Date(article.created_at).toLocaleDateString() : article.date}
+                        </span>
+                      </div>
+                      <h3>{lang === 'ru' ? (article.title_ru || article.titleRu) : (article.title_en || article.title)}</h3>
+                      <span className="blog-preview-card__link">
+                        {t('blog.read')} <FaArrowRight />
                       </span>
                     </div>
-                    <h3>{lang === 'ru' ? (article.title_ru || article.titleRu) : (article.title_en || article.title)}</h3>
-                    <span className="blog-preview-card__link">{t('blog.read')} <FaArrowRight /></span>
-                  </div>
-                </article>
-              </ScrollReveal>
-            ))}
+                  </Link>
+                </ScrollReveal>
+              );
+            })}
           </div>
           <ScrollReveal>
             <div className="text-center" style={{ marginTop: 48 }}>
@@ -612,11 +723,15 @@ export default function Home() {
           </ScrollReveal>
           <div className="geo-grid">
             <ScrollReveal direction="left">
-              <div className="geo-map img-placeholder"><FaGlobeAmericas /></div>
+              <div className="geo-map" id="yandex-map-container" style={{ width: '100%', height: '100%', minHeight: '350px' }}>
+                {!isLoading && (
+                   <YandexMapComponent regions={dynamicRegionsData} />
+                )}
+              </div>
             </ScrollReveal>
             <ScrollReveal direction="right">
               <div className="geo-regions">
-                {regionsData.map((r, i) => (
+                {dynamicRegionsData.map((r, i) => (
                   <div key={i} className="geo-region-item">
                     <FaMapMarkerAlt className="geo-region-item__icon" />
                     <span className="geo-region-item__name">{r.name}</span>
@@ -639,10 +754,18 @@ export default function Home() {
             <h2 className="cta-banner__title">{t('cta.title')}</h2>
             <p className="cta-banner__desc">{t('cta.desc')}</p>
             <div className="cta-banner__btns">
-              <a href="https://t.me/hotelpro_uz" className="btn btn--primary btn--lg" target="_blank" rel="noopener">
+              <a 
+                href={formatTelegramLink(dbSettings['social_telegram']?.value_en || "https://t.me/hotelpro_uz")} 
+                className="btn btn--primary btn--lg" 
+                target="_blank" 
+                rel="noopener"
+              >
                 <FaTelegramPlane /> {t('cta.btn.write')}
               </a>
-              <a href="tel:+998711234567" className="btn btn--outline btn--lg">
+              <a 
+                href={`tel:${(dbSettings['contact_phone']?.value_en || "+998711234567").replace(/\s+/g, '')}`} 
+                className="btn btn--outline btn--lg"
+              >
                 <FaPhone /> {t('cta.btn.call')}
               </a>
             </div>
@@ -651,4 +774,71 @@ export default function Home() {
       </section>
     </main>
   );
+}
+
+// === HELPER COMPONENT FOR YANDEX MAPS ===
+declare global {
+  interface Window {
+    ymaps: any;
+  }
+}
+
+function YandexMapComponent({ regions }: { regions: { name: string, count: number }[] }) {
+  const { lang } = useI18n();
+  useEffect(() => {
+    const init = () => {
+      if (!window.ymaps) return;
+      
+      const container = document.getElementById('yandex-map-container');
+      if (!container) return;
+      container.innerHTML = ''; // Clear for re-init
+
+      const myMap = new window.ymaps.Map('yandex-map-container', {
+        center: [41.3111, 69.2797], // Toshkent — asosiy shahrimiz
+        zoom: 6,
+        controls: ['zoomControl', 'fullscreenControl']
+      }, {
+        searchControlProvider: 'yandex#search'
+      });
+
+      // Coordinates mapping
+      const coordsMap: Record<string, number[]> = {
+        'Tashkent': [41.2995, 69.2401],
+        'Samarkand': [39.6270, 66.9750],
+        'Bukhara': [39.7747, 64.4286],
+        'Khorezm': [41.3789, 60.3644], // Khiva
+        'Kashkadarya': [38.8610, 65.7847], // Karshi
+        'Surkhandarya': [37.2283, 67.2753], // Termez
+        'Fergana': [40.3842, 71.7843],
+        'Namangan': [40.9983, 71.6726],
+        'Andijan': [40.7821, 72.3442],
+        'Jizzakh': [40.1158, 67.8422],
+        'Sirdarya': [40.4858, 68.7836], // Gulistan
+        'Navoiy': [40.0844, 65.3792]
+      };
+
+      regions.forEach(reg => {
+        const point = coordsMap[reg.name];
+        if (point) {
+          const placemark = new window.ymaps.Placemark(point, {
+            balloonContent: `<strong>${reg.name}</strong><br/>${reg.count} ${lang === 'ru' ? 'проектов' : 'projects'}`,
+            hintContent: reg.name
+          }, {
+            preset: 'islands#goldDotIconWithCaption',
+            iconColor: '#C9A84C'
+          });
+          myMap.geoObjects.add(placemark);
+        }
+      });
+
+      // Enable scroll zoom only on focus
+      myMap.behaviors.disable('scrollZoom');
+    };
+
+    if (window.ymaps) {
+      window.ymaps.ready(init);
+    }
+  }, [regions]);
+
+  return null;
 }

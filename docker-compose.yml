@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ./backend
+    container_name: hotelpro-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - db-data:/app
+    environment:
+      - SECRET_KEY=change-this-to-a-strong-random-key
+      - TOKEN_EXPIRE_MINUTES=120
+      - CORS_ORIGINS=http://localhost,http://localhost:80,http://frontend
+      - ALLOWED_HOSTS=*
+      - LOG_LEVEL=INFO
+      - CLOUDINARY_CLOUD=dgqfoffgj
+      - CLOUDINARY_KEY=362179194275199
+      - CLOUDINARY_SECRET=-Ze8usmX2vTPTr26V45mYe3DZZU
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build: ./Front
+    container_name: hotelpro-web
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db-data:
