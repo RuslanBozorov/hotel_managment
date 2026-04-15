@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaSave, FaDatabase, FaLayerGroup, FaCheckDouble, FaRocket, FaPlayCircle } from 'react-icons/fa';
+import { FaSave, FaDatabase, FaLayerGroup, FaCheckDouble, FaPlayCircle } from 'react-icons/fa';
 import * as api from '../../../services/api';
 import { useAdminToast } from '../context/AdminToastContext';
 import ImageSelector from '../common/ImageSelector';

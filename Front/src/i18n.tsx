@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useState } from 'react';
 
-export type Language = 'en' | 'ru' | 'uz';
+export type Language = 'en' | 'ru';
 
 interface Translations {
   [key: string]: string | string[] | Translations;
 }
 
-const translations: Record<Language, Translations> = {
+const translations: Record<string, Translations> = {
   en: {
     nav: {
       home: 'Home',
@@ -851,8 +851,8 @@ const I18nContext = createContext<I18nContextProps | undefined>(undefined);
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [lang, setLangState] = useState<Language>(() => {
     const saved = localStorage.getItem('lang');
-    if (saved === 'en' || saved === 'ru' || saved === 'uz') return saved as Language;
-    return 'uz'; // Default to Uzbek for this project as requested previously
+    if (saved === 'en' || saved === 'ru') return saved as Language;
+    return 'en';
   });
 
   const setLang = (newLang: Language) => {

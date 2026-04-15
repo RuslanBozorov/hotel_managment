@@ -219,7 +219,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
               padding: '4px', borderRadius: '8px', border: '1px solid var(--adm-border)',
               marginRight: '8px'
             }}>
-              {(['uz', 'ru', 'en'] as Language[]).map(l => (
+              {(['en', 'ru'] as Language[]).map(l => (
                 <button key={l}
                   onClick={() => setLang(l)}
                   style={{
@@ -263,15 +263,15 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
               {showNotifications && (
                 <div className="notification-dropdown">
                   <div className="notification-header">
-                    {lang === 'uz' ? 'Xabarnomalar' : lang === 'ru' ? 'Уведомления' : 'Notifications'}
+                    {lang === 'ru' ? 'Уведомления' : 'Notifications'}
                     <span className="badge badge-warning" style={{ fontSize: '0.65rem' }}>
-                      {applications.filter(a => a.status === 'pending').length} {lang === 'uz' ? 'Yangi' : lang === 'ru' ? 'Новых' : 'New'}
+                      {applications.filter(a => a.status === 'pending').length} {lang === 'ru' ? 'Новых' : 'New'}
                     </span>
                   </div>
                   <div className="notification-list">
                     {applications.length === 0 ? (
                       <div style={{ padding: '20px', textAlign: 'center', color: 'var(--adm-text-muted)', fontSize: '0.85rem' }}>
-                        {lang === 'uz' ? 'Yangi xabarlar yo\'q' : lang === 'ru' ? 'Нет новых сообщений' : 'No new messages'}
+                        {lang === 'ru' ? 'Нет новых сообщений' : 'No new messages'}
                       </div>
                     ) : (
                       applications.map(app => (
@@ -300,7 +300,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({
                   </div>
                   <div className="notification-footer">
                     <button onClick={() => { setActiveTab('applications'); setShowNotifications(false); }}>
-                      {lang === 'uz' ? 'Barcha xabarlarni ko\'rish' : lang === 'ru' ? 'Посмотреть все сообщения' : 'View all messages'}
+                      {lang === 'ru' ? 'Посмотреть все сообщения' : 'View all messages'}
                     </button>
                   </div>
                 </div>

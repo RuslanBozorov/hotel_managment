@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FaTrash, FaCheck, FaClock, FaEnvelope, FaPhone, FaUser, FaLightbulb } from 'react-icons/fa';
+import { FaTrash, FaCheck, FaEnvelope, FaPhone, FaUser, FaLightbulb } from 'react-icons/fa';
 import * as api from '../../../services/api';
 
 const ApplicationsManager = () => {

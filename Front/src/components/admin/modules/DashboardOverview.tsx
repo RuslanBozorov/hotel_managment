@@ -11,7 +11,7 @@ const DashboardOverview: React.FC<{ onNavigate?: (tab: string) => void }> = ({ o
   const [recentProjects, setRecentProjects] = useState<api.Project[]>([]);
   const [recentApps, setRecentApps] = useState<api.Application[]>([]);
   const [loading, setLoading] = useState(true);
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const token = localStorage.getItem('admin_token') || '';
 
   useEffect(() => {

@@ -2,25 +2,10 @@
  * Frontend Smoke Tests for HotelPro
  * Run with: npx vitest run
  */
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BrowserRouter } from 'react-router-dom';
-import { I18nProvider } from '../i18n';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { ToastProvider } from '../components/ToastProvider';
-
-// Helper wrapper with all providers
-function TestWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <BrowserRouter>
-      <I18nProvider>
-        <ToastProvider>
-          {children}
-        </ToastProvider>
-      </I18nProvider>
-    </BrowserRouter>
-  );
-}
 
 describe('ErrorBoundary', () => {
   it('renders children when no error', () => {

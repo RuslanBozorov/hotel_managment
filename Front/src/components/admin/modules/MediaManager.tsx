@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaUpload, FaFolderPlus, FaTrash, FaFileImage, FaFileAlt, FaVideo, FaSearch, FaEllipsisV } from 'react-icons/fa';
+import { FaUpload, FaFolderPlus, FaFileImage, FaFileAlt, FaVideo, FaSearch, FaEllipsisV } from 'react-icons/fa';
 
 const MediaManager: React.FC = () => {
   const files = [

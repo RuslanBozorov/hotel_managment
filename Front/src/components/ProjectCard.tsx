@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { FaMapMarkerAlt, FaStar, FaHotel, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './ProjectCard.css';
@@ -62,13 +61,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, lang, isSkeleton = f
   const isLongText = localizedRole && localizedRole.length > TOGGLE_THRESHOLD;
 
   return (
-    <motion.div 
+    <div 
       className={`project-card ${isExpanded ? 'project-card--expanded' : ''}`}
-      initial={{ opacity: 0, scale: 0.95, y: 30 }}
-      whileInView={{ opacity: 1, scale: 1, y: 0 }}
-      viewport={{ once: true, margin: '-50px' }}
-      transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-      layout
       onClick={handleCardClick}
     >
       <div className="project-card__header">
@@ -134,7 +128,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project, lang, isSkeleton = f
           <button className="project-card__btn-enquire" onClick={handleEnquireClick}>{lang === 'ru' ? 'Оставить заявку' : 'Enquire'}</button>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 

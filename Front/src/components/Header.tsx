@@ -1,15 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes, FaPhone, FaChevronDown, FaGlobe } from 'react-icons/fa';
+import { FaBars, FaTimes, FaPhone } from 'react-icons/fa';
 import { useI18n } from '../i18n';
 import type { Language } from '../i18n';
 import * as api from '../services/api';
 import './Header.css';
 
-const langs: { code: Language; label: string; name: string }[] = [
-  { code: 'en', label: 'EN', name: 'English' },
-  { code: 'ru', label: 'RU', name: 'Русский' },
+const langs: { code: Language; label: string; name: string; icon: string }[] = [
+  { code: 'en', label: 'EN', name: 'English', icon: 'https://hatscripts.github.io/circle-flags/flags/gb.svg' },
+  { code: 'ru', label: 'RU', name: 'Русский', icon: 'https://hatscripts.github.io/circle-flags/flags/ru.svg' },
 ];
 
 export default function Header() {
@@ -104,10 +104,8 @@ export default function Header() {
 
         <div className="header__actions">
           <div className="header__lang-dropdown" ref={langRef}>
-            <button className="header__lang-toggle" onClick={() => setIsLangOpen(!isLangOpen)}>
-              <FaGlobe size={14} />
-              <span>{currentLang?.label}</span>
-              <FaChevronDown size={10} className={isLangOpen ? 'rotated' : ''} />
+            <button className="header__lang-toggle--round" onClick={() => setIsLangOpen(!isLangOpen)}>
+              <img src={currentLang?.icon} alt={currentLang?.label} className="lang-icon-img" />
             </button>
             <AnimatePresence>
               {isLangOpen && (
@@ -120,7 +118,7 @@ export default function Header() {
                     <button key={l.code}
                       className={`header__lang-item ${lang === l.code ? 'header__lang-item--active' : ''}`}
                       onClick={() => { setLang(l.code); setIsLangOpen(false); }}>
-                      <span className="item-label">{l.label}</span>
+                      <img src={l.icon} alt={l.label} className="lang-icon-img-sm" />
                       <span className="item-name">{l.name}</span>
                     </button>
                   ))}
@@ -155,13 +153,6 @@ export default function Header() {
                 </motion.div>
               ))}
             </nav>
-            <div className="header__mobile-lang">
-              {langs.map((l) => (
-                <button key={l.code}
-                  className={`header__lang-btn ${lang === l.code ? 'header__lang-btn--active' : ''}`}
-                  onClick={() => setLang(l.code)}>{l.label}</button>
-              ))}
-            </div>
             <Link to="/contact" className="btn btn--primary btn--lg" style={{ width: '100%' }}
               onClick={() => setIsMobileOpen(false)}>
               <FaPhone size={14} /> {t('nav.cta')}

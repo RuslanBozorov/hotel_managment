@@ -147,8 +147,7 @@ const HeroManager: React.FC = () => {
         <div>
           <h1 className="adm-heading">{t('admin.sidebar.hero')}</h1>
           <p className="adm-subheading">
-            {currentLang === 'uz' ? 'Sayt sahifalarining banner va hero qismlarini boshqaring.' : 
-             currentLang === 'ru' ? 'Управляйте баннерами и hero-секциями страниц сайта.' : 
+            {currentLang === 'ru' ? 'Управляйте баннерами и hero-секциями страниц сайта.' : 
              'Manage banners and hero sections of site pages.'}
           </p>
         </div>
@@ -162,8 +161,7 @@ const HeroManager: React.FC = () => {
         <div className="adm-help-content">
           <h4>{t('admin.dashboard.help_title')}</h4>
           <p>
-            {currentLang === 'uz' ? 'Pastdagi bo\'limlardan birini tanlang. Chap tomonda matnlarni o\'zgartiring, o\'ng tomonda esa natijani darhol ko\'rasiz. Tugatgandan so\'ng "Saqlash" tugmasini bosing.' :
-             currentLang === 'ru' ? 'Выберите один из разделов ниже. Измените текст слева, и вы сразу увидите результат справа. По завершении нажмите кнопку "Сохранить".' :
+            {currentLang === 'ru' ? 'Выберите один из разделов ниже. Измените текст слева, и вы сразу увидите результат справа. По завершении нажмите кнопку "Сохранить".' :
              'Select one of the sections below. Change the text on the left, and you will see the result on the right immediately. When finished, click the "Save" button.'}
           </p>
         </div>
@@ -182,7 +180,7 @@ const HeroManager: React.FC = () => {
         <div className="hero-controls">
           {/* Dynamic Controls based on selected tab */}
           <div className="field-section">
-            <h3><FaFont /> {currentLang === 'uz' ? 'MATN VA MAZMUN' : currentLang === 'ru' ? 'ТЕКСТ И СОДЕРЖАНИЕ' : 'TEXT & CONTENT'}</h3>
+            <h3><FaFont /> {currentLang === 'ru' ? 'ТЕКСТ И СОДЕРЖАНИЕ' : 'TEXT & CONTENT'}</h3>
             <div className="control-fields">
               
               {activeTab === 'home' && (

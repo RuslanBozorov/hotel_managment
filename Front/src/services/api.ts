@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://uncaressed-unpulverized-victor.ngrok-free.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://uncaressed-unpulverized-victor.ngrok-free.dev';
 
 export interface Admin {
   id: number;
@@ -87,7 +87,9 @@ const getToken = (): string | null => {
 };
 
 const getHeaders = (token?: string, isJson = true) => {
-  const headers: Record<string, string> = {};
+  const headers: Record<string, string> = {
+    'ngrok-skip-browser-warning': 'true'
+  };
   if (isJson) headers['Content-Type'] = 'application/json';
   // Auto-attach token: explicit param > localStorage
   const authToken = token || getToken();
@@ -154,6 +156,7 @@ export const adminApi = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'ngrok-skip-browser-warning': 'true',
       },
       body: params,
     });

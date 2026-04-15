@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { FaArrowRight } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import HeroSection from '../components/common/HeroSection';
@@ -125,16 +124,11 @@ export default function Projects() {
       {/* 3. PROJECT GRID */}
       <section className="section projects-grid-section">
         <div className="container">
-          <motion.div 
-            layout
-            className="portfolio-grid"
-          >
-            <AnimatePresence mode="popLayout">
-              {currentProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} lang={lang} />
-              ))}
-            </AnimatePresence>
-          </motion.div>
+          <div className="portfolio-grid">
+            {currentProjects.map((project) => (
+              <ProjectCard key={project.id} project={project} lang={lang} />
+            ))}
+          </div>
 
           {totalPages > 1 && (
             <div className="pagination" style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '60px' }}>
