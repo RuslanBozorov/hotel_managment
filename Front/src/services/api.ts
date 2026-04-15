@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://uncaressed-unpulverized-victor.ngrok-free.app';
 
 export interface Admin {
   id: number;
