@@ -130,7 +130,7 @@ export default function Contact() {
                     <div className="contact-info__icon-wrap"><FaEnvelope /></div>
                     <div className="contact-info__text">
                       <span className="contact-info__label">Email</span>
-                      <strong className="contact-info__value">info@hotelpro.uz</strong>
+                      <strong className="contact-info__value">info@hotelconsulting.uz</strong>
                     </div>
                   </div>
                   <div className="contact-info__item">

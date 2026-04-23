@@ -43,7 +43,7 @@ const translations: Record<string, Translations> = {
       label: 'About Us',
       badge: 'Since 2009',
       title: 'We created a new standard of hospitality in Uzbekistan',
-      p1: 'HotelPro was founded with a single mission: to revolutionize the hospitality industry in Uzbekistan by bringing world-class management standards to local properties.',
+      p1: 'HotelConsulting was founded with a single mission: to revolutionize the hospitality industry in Uzbekistan by bringing world-class management standards to local properties.',
       p2: 'Our journey began in 2009, and over the past 15 years, we have grown into the most trusted partner for hotel investors and owners across the country. We don\'t just manage hotels; we create sustainable value.',
       p3: 'Our approach combines deep local market knowledge with international operational excellence, ensuring that every property we touch becomes a leader in its segment.',
       value1: { title: 'Transparency', desc: 'Detailed monthly financial reports' },
@@ -52,7 +52,7 @@ const translations: Record<string, Translations> = {
       btn: 'Learn More About Us',
       history: {
         title: 'Our Journey Through Time',
-        2009: 'Foundation of HotelPro and first consulting project in Tashkent.',
+        2009: 'Foundation of HotelConsulting and first consulting project in Tashkent.',
         2012: 'Signed our first full operational management contract for a 4-star property.',
         2015: 'Launched the Hospitality Training Academy for local professionals.',
         2018: 'Reached the milestone of 30 managed properties across Uzbekistan.',
@@ -70,7 +70,7 @@ const translations: Record<string, Translations> = {
         ]
       },
       team: {
-        title: 'Meet the visionaries behind HotelPro',
+        title: 'Meet the visionaries behind HotelConsulting',
         role1: 'Chief Executive Officer',
         role2: 'Director of Operations',
         role3: 'Director of Marketing',
@@ -320,7 +320,7 @@ const translations: Record<string, Translations> = {
       label: 'О компании',
       badge: 'С 2009 года',
       title: 'Мы создали новый стандарт гостеприимства в Узбекистане',
-      p1: 'Компания HotelPro была основана с одной миссией: революционизировать индустрию гостеприимства в Узбекистане, внедрив стандарты управления мирового уровня в местные объекты.',
+      p1: 'Компания HotelConsulting была основана с одной миссией: революционизировать индустрию гостеприимства в Узбекистане, внедрив стандарты управления мирового уровня в местные объекты.',
       p2: 'Наш путь начался в 2009 году, и за последние 15 лет мы выросли в самого надежного партнера для инвесторов и владельцев отелей по всей стране. Мы не просто управляем отелями; мы создаем долгосрочную ценность.',
       p3: 'Наш подход сочетает глубокое знание местного рынка с международным операционным совершенством, гарантируя, что каждый объект становится лидером в своем сегменте.',
       value1: { title: 'Прозрачность', desc: 'Детальные ежемесячные финансовые отчеты' },
@@ -329,7 +329,7 @@ const translations: Record<string, Translations> = {
       btn: 'Узнать больше о нас',
       history: {
         title: 'Наш путь во времени',
-        2009: 'Основание HotelPro и первый консалтинговый проект в Ташкенте.',
+        2009: 'Основание HotelConsulting и первый консалтинговый проект в Ташкенте.',
         2012: 'Подписание первого контракта на полное операционное управление 4-звездочным отелем.',
         2015: 'Запуск Академии Гостеприимства для обучения местных специалистов.',
         2018: 'Достижение отметки в 30 управляемых объектов по всему Узбекистану.',
@@ -347,7 +347,7 @@ const translations: Record<string, Translations> = {
         ]
       },
       team: {
-        title: 'Познакомьтесь с визионерами HotelPro',
+        title: 'Познакомьтесь с визионерами HotelConsulting',
         role1: 'Генеральный директор (CEO)',
         role2: 'Операционный директор',
         role3: 'Директор по маркетингу',
@@ -597,7 +597,7 @@ const translations: Record<string, Translations> = {
       label: 'Biz haqimizda',
       badge: '2009-yildan beri',
       title: 'Biz O\'zbekistonda mehmondo\'stlikning yangi standartini yaratdik',
-      p1: 'HotelPro birinchi bo\'lib O\'zbekistonda mehmondo\'stlik sanoatini inqilob qilish uchun tashkil etilgan.',
+      p1: 'HotelConsulting birinchi bo\'lib O\'zbekistonda mehmondo\'stlik sanoatini inqilob qilish uchun tashkil etilgan.',
       p2: 'Bizning safarimiz 2009-yilda boshlangan va so\'nggi 15 yil ichida biz mamlakat bo\'ylab mehmonxona investorlari va egalari uchun eng ishonchli hamkorga aylandik.',
       p3: 'Bizning yondashuvimiz chuqur mahalliy bozor bilimlarini xalqaro operatsion mukammallik bilan birlashtiradi.',
       value1: { title: 'Shaffoflik', desc: 'Batafsil oylik moliyaviy hisobotlar' },
@@ -606,7 +606,7 @@ const translations: Record<string, Translations> = {
       btn: 'Biz haqimizda ko\'proq bilib oling',
       history: {
         title: 'Vaqt bo\'ylab qilgan safarimiz',
-        2009: 'HotelPro tashkil etilishi va Toshkentdagi birinchi konsalting loyihasi.',
+        2009: 'HotelConsulting tashkil etilishi va Toshkentdagi birinchi konsalting loyihasi.',
         2012: '4-yulduzli ob\'ekt uchun birinchi to\'liq operatsion boshqaruv shartnomasini imzolash.',
         2015: 'Mahalliy mutaxassislar uchun Mehmondo\'stlik O\'quv Akademiyasining ochilishi.',
         2018: 'O\'zbekiston bo\'ylab 30 ta boshqariladigan ob\'ektlar marrasiga yetish.',
@@ -624,7 +624,7 @@ const translations: Record<string, Translations> = {
         ]
       },
       team: {
-        title: 'HotelPro ortidagi vizionerlar bilan tanishing',
+        title: 'HotelConsulting ortidagi vizionerlar bilan tanishing',
         role1: 'Bosh ijrochi direktor (CEO)',
         role2: 'Operatsiyalar bo\'yicha direktor',
         role3: 'Marketing bo\'yicha direktor',

@@ -1,5 +1,5 @@
 /**
- * Frontend Smoke Tests for HotelPro
+ * Frontend Smoke Tests for HotelConsulting
  * Run with: npx vitest run
  */
 import { describe, it, expect, vi } from 'vitest';

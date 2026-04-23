@@ -41,6 +41,14 @@
   color: var(--color-white);
 }
 
+.footer__logo-img {
+  max-height: 50px;
+  max-width: 220px;
+  width: auto;
+  height: 50px;
+  object-fit: contain;
+}
+
 .footer__desc {
   font-size: 0.9rem;
   line-height: 1.7;

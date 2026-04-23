@@ -213,7 +213,7 @@ export default function About() {
                 <div className="quote-box">
                   <FaQuoteLeft className="quote-icon" />
                   <p>"Hospitality is where empathy meets excellence."</p>
-                  <span>— HotelPro Founding Philosophy</span>
+                  <span>— HotelConsulting Founding Philosophy</span>
                 </div>
                 <div className="philosophy-stats">
                   <div className="p-stat">

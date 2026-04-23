@@ -15,6 +15,8 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import ScrollToTopButton from './components/ScrollToTopButton';
+import { useDynamicSeo } from './hooks/useDynamicSeo';
+import { useI18n } from './i18n';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -27,6 +29,10 @@ function ScrollToTop() {
 function AppLayout() {
   const { pathname } = useLocation();
   const isAdminPage = pathname.startsWith('/admin');
+  const { lang } = useI18n();
+
+  // Dynamically apply SEO meta tags from backend settings
+  useDynamicSeo(lang);
 
   return (
     <>

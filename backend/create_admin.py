@@ -9,7 +9,7 @@ import models
 def create_admin():
     db = SessionLocal()
     
-    email = "frontendruslan@gmail.com"
+    email = "admin@gmail.com"
     password = "admin123"
     
     # Check if this email already exists
@@ -22,7 +22,7 @@ def create_admin():
     else:
         admin = models.Admin(
             email=email,
-            username="ruslan",
+            username="admin",
             hashed_password=get_password_hash(password),
             is_active=True
         )

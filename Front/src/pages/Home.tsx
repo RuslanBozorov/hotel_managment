@@ -133,22 +133,22 @@ export default function Home() {
 
   const testimonials = [
     {
-      text: 'Thanks to HotelPro\'s revenue management, our occupancy rate increased by 40% in the first 6 months. Their transparent reporting gives us full visibility into performance.',
-      textRu: 'Благодаря revenue management от HotelPro, наша заполняемость выросла на 40% за первые 6 месяцев. Их прозрачная отчётность даёт полную картину.',
+      text: 'Thanks to HotelConsulting\'s revenue management, our occupancy rate increased by 40% in the first 6 months. Their transparent reporting gives us full visibility into performance.',
+      textRu: 'Благодаря revenue management от HotelConsulting, наша заполняемость выросла на 40% за первые 6 месяцев. Их прозрачная отчётность даёт полную картину.',
       author: 'Akbar Toshmatov',
       position: 'Bukhara Heritage Hotel Owner',
       positionRu: 'Владелец Bukhara Heritage Hotel',
     },
     {
-      text: 'We planned to open a 4-star hotel in Bukhara. The HotelPro team was with us from pre-opening to the arrival of the first guest. Now our hotel has the highest rating in the region.',
-      textRu: 'Мы планировали открыть 4-звёздочный отель в Бухаре. Команда HotelPro была с нами от pre-opening до прибытия первого гостя. Теперь наш отель имеет самый высокий рейтинг в регионе.',
+      text: 'We planned to open a 4-star hotel in Bukhara. The HotelConsulting team was with us from pre-opening to the arrival of the first guest. Now our hotel has the highest rating in the region.',
+      textRu: 'Мы планировали открыть 4-звёздочный отель в Бухаре. Команда HotelConsulting была с нами от pre-opening до прибытия первого гостя. Теперь наш отель имеет самый высокий рейтинг в регионе.',
       author: 'Dilnoza Rashidova',
       position: 'Samarkand Grand Resort Investor',
       positionRu: 'Инвестор Samarkand Grand Resort',
     },
     {
-      text: 'The franchise acquisition process seemed impossible, but HotelPro guided us through every step. We are now a proud Hilton property in Uzbekistan.',
-      textRu: 'Процесс получения франшизы казался невозможным, но HotelPro провели нас через каждый этап. Теперь мы — отель Hilton в Узбекистане.',
+      text: 'The franchise acquisition process seemed impossible, but HotelConsulting guided us through every step. We are now a proud Hilton property in Uzbekistan.',
+      textRu: 'Процесс получения франшизы казался невозможным, но HotelConsulting провели нас через каждый этап. Теперь мы — отель Hilton в Узбекистане.',
       author: 'Bobur Mamatov',
       position: 'Hilton Tashkent Director',
       positionRu: 'Директор Hilton Tashkent',
@@ -374,7 +374,7 @@ export default function Home() {
                 <div className="about-teaser__image">
                   <img 
                     src={(lang === 'ru' ? dbSettings['home_about_image']?.value_ru : dbSettings['home_about_image']?.value_en) || "https://media.istockphoto.com/id/1320779330/photo/detail-of-a-five-stars-hotel.jpg?s=612x612&w=0&k=20&c=BPoqGxvmF3lGMGyuf0DAlQ7no9UGZ7s80Kiwn7nYSCo="} 
-                    alt="About HotelPro" 
+                    alt="About HotelConsulting" 
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 </div>
@@ -755,7 +755,7 @@ export default function Home() {
             <p className="cta-banner__desc">{t('cta.desc')}</p>
             <div className="cta-banner__btns">
               <a 
-                href={formatTelegramLink(dbSettings['social_telegram']?.value_en || "https://t.me/hotelpro_uz")} 
+                href={formatTelegramLink(dbSettings['social_telegram']?.value_en || "https://t.me/hotelconsulting_uz")} 
                 className="btn btn--primary btn--lg" 
                 target="_blank" 
                 rel="noopener"

@@ -30,7 +30,8 @@ export default function Header() {
   ];
 
   const [phone, setPhone] = useState('+998 90 123 45 67');
-  const [siteName, setSiteName] = useState({ en: 'HotelPro', ru: 'HotelPro' });
+  const [siteName, setSiteName] = useState({ en: 'HotelConsulting', ru: 'HotelConsulting' });
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 50);
@@ -51,9 +52,12 @@ export default function Header() {
         }
         if (settingsMap['site_name']) {
           setSiteName({
-            en: settingsMap['site_name'].value_en || 'HotelPro',
-            ru: settingsMap['site_name'].value_ru || 'HotelPro'
+            en: settingsMap['site_name'].value_en || 'HotelConsulting',
+            ru: settingsMap['site_name'].value_ru || 'HotelConsulting'
           });
+        }
+        if (settingsMap['site_logo']?.value_en) {
+          setLogoUrl(settingsMap['site_logo'].value_en);
         }
       } catch (err) {
         console.error("Failed to fetch settings", err);
@@ -83,11 +87,21 @@ export default function Header() {
     <header className={`header ${isScrolled ? 'header--scrolled' : ''} ${isMobileOpen ? 'header--mobile-open' : ''}`}>
       <div className="header__inner">
         <Link to="/" className="header__logo">
-          <span className="header__logo-icon">{(lang === 'ru' ? siteName.ru : siteName.en).charAt(0)}</span>
-          <span className="header__logo-text">
-            {lang === 'ru' ? siteName.ru : siteName.en}
-          </span>
-          <span className="header__logo-since">Since 2009</span>
+          {logoUrl ? (
+            <img
+              src={`${logoUrl}${logoUrl.includes('?') ? '&' : '?'}v=${Date.now()}`}
+              alt={lang === 'ru' ? siteName.ru : siteName.en}
+              className="header__logo-img"
+            />
+          ) : (
+            <>
+              <span className="header__logo-icon">{(lang === 'ru' ? siteName.ru : siteName.en).charAt(0)}</span>
+              <span className="header__logo-text">
+                {lang === 'ru' ? siteName.ru : siteName.en}
+              </span>
+              <span className="header__logo-since">Since 2009</span>
+            </>
+          )}
         </Link>
 
         <nav className="header__nav">

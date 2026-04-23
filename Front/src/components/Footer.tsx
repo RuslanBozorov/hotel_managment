@@ -34,7 +34,15 @@ export default function Footer() {
         {/* Column 1: Brand */}
         <div className="footer__col">
           <Link to="/" className="footer__logo">
-            {getS('site_name') || 'HotelPro'}
+            {getS('site_logo') ? (
+              <img
+                src={getS('site_logo')}
+                alt={getS('site_name') || 'HotelConsulting'}
+                className="footer__logo-img"
+              />
+            ) : (
+              getS('site_name') || 'HotelConsulting'
+            )}
           </Link>
           <p className="footer__desc">{t('footer.desc')}</p>
           <div className="footer__socials">
@@ -82,8 +90,8 @@ export default function Footer() {
             <a href={`tel:${(getS('contact_phone') || '+998711234567').replace(/\s+/g, '')}`} className="footer__contact">
               <FaPhone /> <span>{getS('contact_phone') || '+998 71 XXX XX XX'}</span>
             </a>
-            <a href={`mailto:${getS('support_email') || 'info@hotelpro.uz'}`} className="footer__contact">
-              <FaEnvelope /> <span>{getS('support_email') || 'info@hotelpro.uz'}</span>
+            <a href={`mailto:${getS('support_email') || 'info@hotelconsulting.uz'}`} className="footer__contact">
+              <FaEnvelope /> <span>{getS('support_email') || 'info@hotelconsulting.uz'}</span>
             </a>
             {getS('social_telegram') && (
               <a href={formatTelegramLink(getS('social_telegram'))} target="_blank" rel="noreferrer" className="footer__contact">
@@ -104,7 +112,7 @@ export default function Footer() {
         <div className="footer__bottom-links">
           <Link to="#">{t('footer.privacy')}</Link>
           <Link to="#">{t('footer.terms')}</Link>
-          <p className="footer__copyright-text">&copy; 2025 HotelPro. {t('footer.copyright')}</p>
+          <p className="footer__copyright-text">&copy; 2025 HotelConsulting. {t('footer.copyright')}</p>
         </div>
       </div>
     </footer>
